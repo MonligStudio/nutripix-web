@@ -1,26 +1,671 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* ── Surfaces (uygulamanın dark paletiyle birebir) ── */
+  --color-ink: #070a11;
+  --color-ink-2: #0e1520;
+  --color-ink-3: #141e2a;
+  --color-line: #1b2733;
+  --color-line-2: #2b3a48;
+
+  /* ── Metin ── */
+  --color-fg: #edf4f1;
+  --color-fg-2: #94a39e;
+  --color-fg-3: #65756f;
+
+  /* ── Marka ── */
+  --color-mint: #62e69a;
+  --color-mint-2: #79eda9;
+  --color-mint-deep: #23815a;
+  --color-gold: #f0b90b;
+
+  /* ── Besin renkleri ── */
+  --color-coral: #f27d5c;
+  --color-amber: #e09b2d;
+  --color-pink: #d979a5;
+  --color-lav: #8b7ec8;
+  --color-sky: #5ba4cf;
+  --color-teal: #3db89e;
+
+  --font-display: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  * {
+    border-color: var(--color-line);
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  html {
+    -webkit-text-size-adjust: 100%;
+    scrollbar-color: var(--color-line-2) var(--color-ink);
+  }
+
+  body {
+    background-color: var(--color-ink);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  main {
+    background:
+      radial-gradient(70% 22% at 8% 28%, rgba(67, 98, 152, 0.08), transparent 72%),
+      radial-gradient(65% 20% at 92% 62%, rgba(38, 149, 101, 0.07), transparent 72%),
+      linear-gradient(180deg, #070a11 0%, #091019 48%, #070a11 100%);
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--color-mint) 30%, transparent);
+    color: #fff;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.03em;
+    font-weight: 700;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-ink);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-line-2);
+    border-radius: 99px;
+    border: 3px solid var(--color-ink);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  .h-display {
+    font-family: var(--font-display);
+    font-weight: 800;
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+  }
+
+  .text-gradient-mint {
+    background: linear-gradient(100deg, #7ae5a4 0%, #4ade80 45%, #2d9f6c 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .card {
+    background: var(--color-ink-2);
+    border: 1px solid var(--color-line);
+    border-radius: 24px;
+  }
+
+  .glass {
+    background: color-mix(in oklab, var(--color-ink-2) 72%, transparent);
+    backdrop-filter: blur(18px) saturate(150%);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    border: 1px solid var(--color-line);
+  }
+
+  .hairline {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--color-line-2) 20%,
+      var(--color-line-2) 80%,
+      transparent
+    );
+    height: 1px;
+  }
+
+  .mint-glow {
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--color-mint) 22%, transparent),
+      0 18px 60px -18px color-mix(in oklab, var(--color-mint) 45%, transparent);
+  }
+
+  .eyebrow {
+    font-family: var(--font-display);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-fg-3);
+  }
+
+  .noise::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .boot-lock {
+    overflow: hidden !important;
+    height: 100vh;
+  }
+
+  .marquee-track {
+    animation: marquee 38s linear infinite;
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes float-soft {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -14px, 0);
+  }
+}
+
+/* Reveal — GSAP yoksa / rAF donarsa bile içerik görünür kalır */
+[data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 26px, 0);
+  will-change: transform, opacity;
+}
+[data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .marquee-track {
+    animation: none !important;
+  }
+}
+
+/* Açılış ve hero aynı ölçü/koordinat değişkenlerini paylaşır. Böylece çizilen
+   telefon, mockup'a dönüşürken ekranda sıçramaz. */
+:root {
+  --hero-device-width: clamp(252px, 22vw, 330px);
+  --hero-device-center-y: calc(50% + 34px);
+  /* Tüm sayfa tek renk: hero'da gradyan varken alt bölümler düz mürekkep
+     olduğu için bölüm geçişlerinde görünür bir renk atlaması oluyordu. */
+  --premium-stage-background: var(--color-ink);
+}
+
+.device-lock {
+  position: absolute;
+  left: 50%;
+  top: var(--hero-device-center-y);
+  width: var(--hero-device-width);
+  aspect-ratio: 1179 / 2556;
+  transform: translate(-50%, -50%);
+}
+
+.boot-screen {
+  isolation: isolate;
+}
+
+.boot-screen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--premium-stage-background);
+}
+
+.hero-shell {
+  min-height: max(760px, 100svh);
+  padding-top: 68px;
+  background: var(--premium-stage-background);
+}
+
+.hero-grid {
+  position: absolute;
+  inset: 68px 0 0;
+  opacity: 0.12;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 84px 84px;
+  mask-image: radial-gradient(circle at center, black, transparent 72%);
+  pointer-events: none;
+}
+
+.hero-light {
+  position: absolute;
+  width: 42vw;
+  height: 42vw;
+  border-radius: 999px;
+  filter: blur(80px);
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+.hero-light-left {
+  left: -27vw;
+  top: 12%;
+  background: #5ba4cf;
+}
+
+.hero-light-right {
+  right: -30vw;
+  bottom: -15%;
+  background: #4ade80;
+}
+
+.hero-copy-block,
+.hero-action-block {
+  position: absolute;
+  z-index: 5;
+  top: auto;
+  bottom: clamp(36px, 5vh, 58px);
+  transform: none;
+}
+
+.hero-copy-block {
+  left: clamp(24px, 5vw, 88px);
+  width: min(31vw, 430px);
+}
+
+.hero-action-block {
+  right: clamp(24px, 5vw, 88px);
+  width: min(27vw, 360px);
+}
+
+.hero-device-lock {
+  z-index: 3;
+  perspective: 1400px;
+}
+
+.hero-parallax,
+.hero-brand-backdrop,
+.hero-copy-depth,
+.hero-action-depth {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.hero-phone {
+  z-index: 2;
+  transform: translateZ(0);
+}
+
+.hero-brand-backdrop {
+  position: absolute;
+  z-index: 1;
+  top: 68px;
+  left: 0;
+  display: flex;
+  width: 100%;
+  height: 50svh;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 5px;
+  padding: 0;
+  transform: none;
+  transform-origin: center top;
+  color: var(--color-fg);
+  font-family: var(--font-display);
+  font-size: clamp(58px, 18vw, 340px);
+  font-weight: 800;
+  line-height: 0.78;
+  letter-spacing: 0;
+  white-space: nowrap;
+  -webkit-text-stroke: 0;
+  text-shadow: none;
+  paint-order: normal;
+  text-rendering: geometricPrecision;
+  pointer-events: none;
+  perspective: 1500px;
+}
+
+.hero-brand-slot {
+  display: flex;
+  height: 100%;
+  min-width: 0;
+  flex: 0 0 auto;
+  align-items: flex-start;
+  justify-content: center;
+  transform: scaleY(1.65);
+  transform-origin: center top;
+}
+
+.hero-brand-letter {
+  display: block;
+  color: var(--color-fg);
+  -webkit-text-fill-color: var(--color-fg);
+  transform-origin: center top;
+  will-change: transform, opacity;
+}
+
+.hero-brand-slot:nth-child(n + 6) .hero-brand-letter {
+  color: var(--color-mint);
+  -webkit-text-fill-color: var(--color-mint);
+}
+
+.hero-card {
+  position: absolute;
+  z-index: 4;
+  pointer-events: none;
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+}
+
+.hero-card-surface {
+  border: 1px solid rgba(127, 151, 146, 0.2);
+  border-radius: 18px;
+  padding: 13px;
+  background: linear-gradient(145deg, rgba(21, 31, 43, 0.92), rgba(9, 14, 23, 0.82));
+  box-shadow:
+    0 28px 70px -24px rgba(0, 0, 0, 0.88),
+    0 1px 0 rgba(255, 255, 255, 0.075) inset,
+    0 0 38px -24px rgba(98, 230, 154, 0.48);
+  backdrop-filter: blur(18px) saturate(145%);
+  -webkit-backdrop-filter: blur(18px) saturate(145%);
+  transform-style: preserve-3d;
+}
+
+.hero-card-meal {
+  left: -36%;
+  top: 14%;
+  width: 158px;
+}
+
+.hero-card-meal .hero-card-surface {
+  transform: translateZ(78px) rotateY(11deg) rotateZ(-2.5deg);
+}
+
+.hero-card-macros {
+  right: -36%;
+  top: 38%;
+  width: 148px;
+}
+
+.hero-card-macros .hero-card-surface {
+  transform: translateZ(92px) rotateY(-12deg) rotateZ(2deg);
+}
+
+.hero-card-streak {
+  bottom: 12%;
+  left: -23%;
+  width: 124px;
+}
+
+.hero-card-streak .hero-card-surface {
+  transform: translateZ(105px) rotateY(9deg) rotateZ(1.5deg);
+}
+
+.hero-store-badges {
+  align-items: stretch;
+  flex-wrap: nowrap;
+  width: min(100%, 400px);
+}
+
+.hero-store-badges > a {
+  flex: 1 1 0;
+  justify-content: center;
+}
+
+.store-badges {
+  width: min(100%, 400px);
+}
+
+.store-badges > a {
+  flex: 1 1 0;
+  justify-content: center;
+}
+
+@media (max-width: 1100px) and (min-width: 901px) {
+  .hero-copy-block {
+    left: 28px;
+    width: 31vw;
+  }
+
+  .hero-action-block {
+    right: 28px;
+    width: 31vw;
+  }
+
+  .hero-card-meal {
+    left: -27%;
+  }
+
+  .hero-card-macros {
+    right: -27%;
+  }
+}
+
+@media (max-width: 900px) {
+  :root {
+    --hero-device-width: min(64vw, 270px);
+    --hero-device-center-y: clamp(305px, 43svh, 370px);
+  }
+
+  .hero-shell {
+    min-height: 1100px;
+  }
+
+  .hero-copy-block,
+  .hero-action-block {
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    width: min(calc(100% - 40px), 560px);
+    transform: translateX(-50%);
+    text-align: center;
+  }
+
+  .hero-copy-block {
+    top: clamp(650px, 81svh, 735px);
+  }
+
+  .hero-action-block {
+    top: clamp(780px, 94svh, 850px);
+  }
+
+  .hero-action-block .hero-actions-in,
+  .hero-store-badges {
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-copy-block p,
+  .hero-action-depth > p {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-card-meal {
+    left: -19%;
+    top: 14%;
+    width: 146px;
+  }
+
+  .hero-card-macros {
+    right: -20%;
+    top: 46%;
+    width: 140px;
+  }
+
+  .hero-card-streak {
+    display: none;
+  }
+
+  .hero-card-surface {
+    padding: 11px;
+  }
+
+  .hero-copy-depth,
+  .hero-action-depth {
+    transform: none !important;
+  }
+
+  .hero-brand-backdrop {
+    transform: none !important;
+  }
+
+  .hero-brand-slot {
+    transform: scaleY(2.15);
+  }
+}
+
+@media (max-width: 520px) {
+  .hero-shell {
+    min-height: 1070px;
+  }
+
+  .hero-copy-block {
+    top: clamp(625px, 79svh, 705px);
+  }
+
+  .hero-action-block {
+    top: clamp(770px, 94svh, 830px);
+  }
+
+  .hero-store-badges {
+    width: 100%;
+    gap: 6px;
+  }
+
+  .hero-store-badges > a {
+    padding-left: 10px;
+    padding-right: 10px;
+    gap: 8px;
+  }
+
+  .hero-store-badges > a > span:first-child svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .hero-store-badges > a > span:nth-child(2) > span:first-child {
+    font-size: 8px;
+  }
+
+  .hero-store-badges > a > span:nth-child(2) > span:last-child {
+    font-size: 11.5px;
+  }
+}
+
+@media (max-width: 360px) {
+  .store-badges {
+    gap: 5px;
+  }
+
+  .store-badges > a {
+    gap: 6px;
+    padding: 10px 7px;
+  }
+
+  .store-badges > a > span:first-child svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .store-badges > a > span:nth-child(2) > span:first-child {
+    font-size: 7px;
+  }
+
+  .store-badges > a > span:nth-child(2) > span:last-child {
+    font-size: 10.5px;
+  }
+}
+
+/* ───────────── "Ne işe yarar" 3B blok sahnesi ─────────────
+   Bloklar farklı boyutlarda (eski bento hücrelerinin oranları), bu yüzden
+   yüzler --w/--h/--d değişkenlerinden hesaplanıyor. Her yüz merkeze
+   hizalanıp önce ötelenir, sonra döndürülür.
+
+   --cell ve --fs çalışma anında JS'ten geliyor (FeatureCubes/layout): hücre
+   boyutu ekrana göre hesaplanır, yüzlerdeki tüm ölçüler em olduğu için yazı
+   ve boşluklar hücreyle birlikte ölçeklenir. Buradakiler yalnızca ilk
+   render'ın (JS öncesi) makul görünmesi için. */
+.fc-scene {
+  --cell: 176px;
+  --d: calc(var(--cell) * 0.62);
+  --fs: 16px;
+}
+
+.fc-box {
+  transform-style: preserve-3d;
+  width: var(--w, var(--cell));
+  height: var(--h, var(--cell));
+}
+
+.fc-f {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  overflow: hidden;
+  font-size: var(--fs);
+  border-radius: calc(var(--fs) * 0.75);
+  background: var(--color-ink-2);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.07) inset,
+    0 18px 40px -22px rgba(0, 0, 0, 0.8);
+  backface-visibility: visible;
+}
+
+.fc-f-front,
+.fc-f-back {
+  width: var(--w);
+  height: var(--h);
+}
+.fc-f-right,
+.fc-f-left {
+  width: var(--d);
+  height: var(--h);
+}
+.fc-f-top,
+.fc-f-bottom {
+  width: var(--w);
+  height: var(--d);
+}
+
+.fc-f-front  { transform: translate(-50%, -50%) translateZ(calc(var(--d) / 2)); }
+.fc-f-back   { transform: translate(-50%, -50%) translateZ(calc(var(--d) / -2)) rotateY(180deg); }
+.fc-f-right  { transform: translate(-50%, -50%) translateX(calc(var(--w) / 2)) rotateY(90deg); }
+.fc-f-left   { transform: translate(-50%, -50%) translateX(calc(var(--w) / -2)) rotateY(-90deg); }
+.fc-f-top    { transform: translate(-50%, -50%) translateY(calc(var(--h) / -2)) rotateX(90deg); }
+.fc-f-bottom { transform: translate(-50%, -50%) translateY(calc(var(--h) / 2)) rotateX(-90deg); }
+
+/* Hücre küçüldüğünde (dar ekran) yüzler sadeleşir: mini mockup kısalır,
+   geniş-alçak bloğun açıklaması gizlenir — yazı kırpılmasın diye. */
+.fc-compact .fc-visual-sm {
+  height: 22%;
+}
+
+.fc-compact .fc-body-wide {
+  display: none;
+}
+
+/* Çok küçük hücrede (küçük telefon) tek hücrelik bloklarda mockup ve etiket
+   satırı düşer, yer tamamen başlığa ve rakama kalır. */
+.fc-bare .fc-visual-sm,
+.fc-bare .fc-tagrow-sm {
+  display: none;
+}
+
+.fc-prop {
+  filter: drop-shadow(0 18px 26px rgba(0, 0, 0, 0.55));
+  will-change: transform, opacity;
 }
