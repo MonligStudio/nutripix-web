@@ -9,6 +9,7 @@ stüdyo ışığı, saydam arka plan. Her nesne kendi webp'sine render edilir.
       --python blender/props.py -- <cikis_klasoru> [samples]
 """
 
+
 import bpy
 import math
 import os
