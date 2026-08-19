@@ -42,10 +42,11 @@ export function LogoMark({
 export function Wordmark({ className = "" }: { className?: string }) {
   return (
     <span
-      className={`font-display font-extrabold tracking-[-0.04em] ${className}`}
+      lang="en"
+      className={`font-display uppercase tracking-[0.015em] ${className}`}
       style={{ fontFamily: "var(--font-display)" }}
     >
-      Nutri<span className="text-mint">Pix</span>
+      Nutri<span className="text-leaf">Pix</span>
     </span>
   );
 }
@@ -53,7 +54,7 @@ export function Wordmark({ className = "" }: { className?: string }) {
 export function LogoLockup({ className = "" }: { className?: string }) {
   return (
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
-      <LogoMark className="h-8 w-8 text-mint" />
+      <LogoMark className="h-8 w-8 text-leaf" />
       <Wordmark className="text-[19px]" />
     </span>
   );

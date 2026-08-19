@@ -171,9 +171,22 @@ export default function Hero() {
   }, []);
 
   return (
-    <section ref={root} id="top" className="hero-shell relative overflow-hidden">
+    <section
+      ref={root}
+      id="top"
+      data-color="ink"
+      className="hero-shell relative overflow-hidden"
+    >
 
-      <h1 className="hero-brand-backdrop" aria-label="NutriPix">
+      {/* Marka yazısı yatayda ekranı baştan sona kaplar: punto data-fit ile
+          çalışma anında viewport genişliğine göre hesaplanır. */}
+      <h1
+        data-fit
+        data-fit-max="820"
+        data-fit-bleed="1.045"
+        className="hero-brand-backdrop"
+        aria-label="NutriPix"
+      >
         {"NUTRIPIX".split("").map((letter, index) => (
           <span key={`${letter}-${index}`} aria-hidden="true" className="hero-brand-slot">
             <span className="hero-brand-letter">{letter}</span>
@@ -199,13 +212,13 @@ export default function Hero() {
           <div className="hero-card hero-card-meal">
             <div className="hero-card-surface">
               <div className="flex items-center gap-2">
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-mint/15 text-mint">
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-accent/15 text-accent">
                   <Icons.check className="h-4 w-4" />
                 </span>
                 <span className="text-[11px] font-semibold text-fg">Öğün kaydedildi</span>
               </div>
               <p className="mt-2 text-[10.5px] text-fg-2">Izgara tavuk · Bulgur</p>
-              <p className="mt-1 font-display text-[19px] font-bold text-coral">
+              <p className="mt-1 font-display text-[19px] text-leaf">
                 612 <span className="text-[10px] font-medium text-fg-3">kcal</span>
               </p>
             </div>
@@ -216,9 +229,9 @@ export default function Hero() {
               <p className="text-[9px] font-semibold uppercase tracking-[0.16em] text-fg-3">Makrolar</p>
               <div className="mt-3 space-y-2.5">
                 {[
-                  { label: "Protein", value: "48 g", width: "74%", color: "var(--color-mint)" },
-                  { label: "Karb.", value: "62 g", width: "57%", color: "var(--color-amber)" },
-                  { label: "Yağ", value: "18 g", width: "36%", color: "var(--color-pink)" },
+                  { label: "Protein", value: "48 g", width: "74%", color: "var(--color-accent)" },
+                  { label: "Karb.", value: "62 g", width: "57%", color: "var(--color-sage)" },
+                  { label: "Yağ", value: "18 g", width: "36%", color: "var(--color-camel)" },
                 ].map((macro) => (
                   <div key={macro.label}>
                     <div className="flex justify-between text-[9.5px] text-fg-2">
@@ -237,7 +250,7 @@ export default function Hero() {
             <div className="hero-card-surface flex items-center gap-2.5 !px-3.5 !py-3">
               <span className="text-[18px]">🔥</span>
               <div>
-                <p className="font-display text-[14px] font-bold leading-none text-gold">12 gün</p>
+                <p className="font-display text-[14px] leading-none text-leaf">12 gün</p>
                 <p className="mt-1 text-[9px] text-fg-3">kesintisiz seri</p>
               </div>
             </div>
@@ -247,10 +260,8 @@ export default function Hero() {
 
       <div className="hero-copy-block">
         <div className="hero-copy-depth">
-          <p className="hero-copy-in font-display text-[10px] font-semibold uppercase tracking-[0.2em] text-mint">
-            Fotoğraf · Barkod · Metin
-          </p>
-          <p className="hero-copy-in mt-3 font-display text-[clamp(21px,2.2vw,31px)] font-semibold leading-[1.12] tracking-[-0.035em] text-fg">
+          <p className="hero-copy-in eyebrow !text-accent">Fotoğraf · Barkod · Metin</p>
+          <p className="hero-copy-in h-display mt-4 text-[clamp(27px,3.1vw,46px)] text-fg">
             Bir öğün, birkaç saniye.
             <br />
             <span className="text-fg-2">Gerisi tek ekranda.</span>
@@ -266,10 +277,10 @@ export default function Hero() {
 
           <div className="hero-actions-in mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-[11.5px] text-fg-3">
             <span className="inline-flex items-center gap-1.5">
-              <Icons.check className="h-3.5 w-3.5 text-mint" /> 7 gün ücretsiz
+              <Icons.check className="h-3.5 w-3.5 text-accent" /> 7 gün ücretsiz
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <Icons.check className="h-3.5 w-3.5 text-mint" /> Kart gerekmez
+              <Icons.check className="h-3.5 w-3.5 text-accent" /> Kart gerekmez
             </span>
           </div>
         </div>

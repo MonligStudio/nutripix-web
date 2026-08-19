@@ -13,14 +13,15 @@ export function PhoneFrame({
   className = "",
   style,
   buttons = true,
-  island = true,
+  camera = "island",
   glow = true,
 }: {
   children?: ReactNode;
   className?: string;
   style?: CSSProperties;
   buttons?: boolean;
-  island?: boolean;
+  /** iPhone'da dinamik ada, Android'de tepe ortasında delik kamera. */
+  camera?: "island" | "punch" | "none";
   glow?: boolean;
 }) {
   return (
@@ -33,7 +34,8 @@ export function PhoneFrame({
           className="pointer-events-none absolute -inset-[14%] -z-10 opacity-70"
           style={{
             background:
-              "radial-gradient(50% 42% at 50% 46%, rgba(74,222,128,.16) 0%, rgba(74,222,128,.05) 45%, transparent 72%)",
+              "radial-gradient(50% 42% at 50% 46%, color-mix(in oklab, var(--accent) 26%, transparent) 0%," +
+              " color-mix(in oklab, var(--accent) 8%, transparent) 45%, transparent 72%)",
           }}
         />
       )}
@@ -74,13 +76,23 @@ export function PhoneFrame({
         >
           {children}
 
-          {island && (
+          {camera === "island" && (
             <div
               className="pointer-events-none absolute left-1/2 top-[1.15%] h-[3.4%] w-[30.5%] -translate-x-1/2 rounded-full bg-black"
               style={{ boxShadow: "0 0 0 1px rgba(255,255,255,.05)" }}
             >
               <span className="absolute right-[14%] top-1/2 h-[42%] w-0 -translate-y-1/2 rounded-full pl-[10%] [background:radial-gradient(circle,#1b2733_35%,#0a0e13_70%)]" />
             </div>
+          )}
+
+          {camera === "punch" && (
+            <span
+              className="pointer-events-none absolute left-1/2 top-[1.5%] aspect-square w-[4.6%] -translate-x-1/2 rounded-full bg-black"
+              style={{
+                boxShadow: "0 0 0 1px rgba(255,255,255,.07)",
+                background: "radial-gradient(circle at 35% 30%, #1b2733 30%, #05080c 72%)",
+              }}
+            />
           )}
 
           {/* cam yansıması — tek, yumuşak diyagonal */}

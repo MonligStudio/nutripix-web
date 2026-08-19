@@ -4,6 +4,52 @@ NutriPix'in Next.js ile hazırlanan tanıtım sitesi. Proje GitHub Pages için t
 statik çıktı üretir ve `main` dalına gönderilen her değişiklik GitHub Actions
 üzerinden otomatik olarak yayınlanır.
 
+## Tasarım sistemi
+
+Sayfanın zemini kural olarak **tam siyah**; yeşil, "Bir öğün üç adım" ve
+"Nasıl kullanılır" bölümlerinde devreye girip sonra siyaha döner, turuncu ise
+yalnızca kapanış çağrısında görünür. Yani site üç renkte konuşur:
+siyah → yeşil → turuncu. Açılış animasyonu da hero ile birebir aynı zemini
+kullanır (ayrı ışık/ızgara katmanı yok).
+
+Marka rengi ayrı bir sabittir: `--color-leaf` (logo, "PIX", header butonu ve
+hero'nun tüm vurguları). Hero ile açılış ekranında `--color-accent` bu yeşile
+ezilir, sayfanın geri kalanında vurgu hardal kalır.
+
+Her bölüm (ya da bölüm içindeki durak) `data-color="ink | olive | orange"`
+taşır; `SectionColor` bileşeni durak ekranın ortasına gelince kök değişkenleri
+(`--bg`, `--fg`, `--accent`, `--accent-2`, `--ribbon`) o temaya tweenler. Header
+ayrı bir renk mantığı kullanmaz, aynı değişkenlerden beslendiği için zeminle
+eşzamanlı değişir. Yüzey, çizgi ve ikincil metin renkleri `globals.css` içinde
+bu değişkenlerden `color-mix` ile türer. Palet ve temalar `src/lib/palette.ts`
+dosyasında; indirme butonlarının siyah zemini ve turuncu hover'ı ise tema
+değişse de sabittir.
+
+`Spotlight` bölümü ("Ne işe yarar"), arkasında scroll ile çizilen kalın bir hat
+(`--ribbon`) ve bu hattın üstüne dönüşümlü oturan kart/telefon satırlarından
+oluşur; zemini bölüm boyunca siyah kalır.
+
+Başlık fontu **SCHABO Condensed** (Tom Robin Karlsson, kişisel ve ticari
+kullanımda ücretsiz). Fontun orijinalinde Türkçe `İ` ve `ı` glifleri yok;
+`scripts/patch_schabo.py` bunları fontun kendi diyakritiğinden üretip ekliyor —
+`src/fonts/SCHABO-Condensed.otf` bu yamalı sürümdür. `lang="tr"` altında büyük
+harfe çevirme markaları da bozduğu için (iPhone → İPHONE) marka adları
+`lang="en"` ile sarmalanır; veriden gelen başlıklarda bunu
+`src/components/ui/brand.tsx` içindeki `withBrands` yapar.
+
+Kenardan kenara uzanan başlıklar `data-fit` ile işaretlenir; punto, satır
+kapsayıcısına tam oturacak şekilde çalışma anında hesaplanır
+(`data-fit-max` üst sınır, `data-fit-bleed` yan boşluk telafisi — hero'daki
+NUTRIPIX yazısı bunu kullanır). Parallax için `data-parallax="0.2"` (isteğe
+bağlı `data-parallax-scope` kapsayıcısı) yeterli.
+
+Pinli bir bölüm eklenirse ona `refreshPriority: 1`, layout'a bağlı diğer
+tetikleyicilere `-1` verilmeli; yoksa ScrollTrigger konumları pin boşluğunu
+saymadan hesaplar.
+
+Açılış animasyonunu atlamak için: `http://localhost:3000/?boot=0`
+(`?bootAt=0.33` ise animasyonu o karede dondurur).
+
 ## Yerelde çalıştırma
 
 ```bash

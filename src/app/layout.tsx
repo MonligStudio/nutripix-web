@@ -3,18 +3,12 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { site } from "@/lib/content";
 
-const outfit = localFont({
-  variable: "--font-outfit",
+/* Başlık fontu: SCHABO Condensed (ücretsiz, Tom Robin Karlsson).
+   Türkçe İ/ı glifleri fontta yoktu, scripts/patch_schabo.py ile eklendi. */
+const schabo = localFont({
+  variable: "--font-schabo",
   display: "swap",
-  src: [
-    { path: "../fonts/Outfit-Light.ttf", weight: "300", style: "normal" },
-    { path: "../fonts/Outfit-Regular.ttf", weight: "400", style: "normal" },
-    { path: "../fonts/Outfit-Medium.ttf", weight: "500", style: "normal" },
-    { path: "../fonts/Outfit-SemiBold.ttf", weight: "600", style: "normal" },
-    { path: "../fonts/Outfit-Bold.ttf", weight: "700", style: "normal" },
-    { path: "../fonts/Outfit-ExtraBold.ttf", weight: "800", style: "normal" },
-    { path: "../fonts/Outfit-Black.ttf", weight: "900", style: "normal" },
-  ],
+  src: [{ path: "../fonts/SCHABO-Condensed.otf", weight: "400", style: "normal" }],
 });
 
 const jakarta = localFont({
@@ -63,7 +57,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0d1117",
+  themeColor: "#141009",
   colorScheme: "dark",
 };
 
@@ -71,8 +65,8 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="tr" className={`${outfit.variable} ${jakarta.variable}`}>
-      <body className="bg-ink text-fg antialiased">{children}</body>
+    <html lang="tr" className={`${schabo.variable} ${jakarta.variable}`}>
+      <body className="antialiased">{children}</body>
     </html>
   );
 }

@@ -47,6 +47,72 @@ export default function SmoothScroll() {
       rafId = requestAnimationFrame(raf);
     }
 
+    /* ── Kenardan kenara başlık ──
+       data-fit taşıyan satır, kapsayıcısının içine tam oturacak punto ile
+       ölçeklenir (referans: dev tek satırlık tipografi bantları). Ölçüm font
+       yüklendikten sonra yapılır, yoksa yedek fontun genişliğiyle hesaplanır. */
+    const fitLines = () => {
+      document.querySelectorAll<HTMLElement>("[data-fit]").forEach((el) => {
+        const parent = el.parentElement;
+        if (!parent) return;
+        const style = getComputedStyle(parent);
+        const room =
+          parent.clientWidth -
+          parseFloat(style.paddingLeft || "0") -
+          parseFloat(style.paddingRight || "0");
+        if (room <= 0) return;
+
+        // Blok (ya da flex) öğenin genişliği kapsayıcısına eşit olduğu için
+        // ölçüm sırasında width: max-content veriliyor; böylece hem düz metin
+        // hem de harflere bölünmüş flex satırı kendi doğal genişliğini bildirir.
+        const width0 = el.style.width;
+        el.style.width = "max-content";
+        el.style.fontSize = "100px";
+        const width = el.getBoundingClientRect().width;
+        el.style.width = width0;
+        if (!width) return;
+        const max = Number(el.dataset.fitMax) || 300;
+        // SCHABO'nun yan boşlukları yüzünden harflerin mürekkebi kutunun biraz
+        // içinde kalıyor; data-fit-bleed onu telafi eder (hero markası için).
+        const bleed = Number(el.dataset.fitBleed) || 1;
+        el.style.fontSize = `${Math.max(34, Math.min((room / width) * 100 * bleed, max))}px`;
+      });
+    };
+
+    /* ── Parallax ──
+       data-parallax="0.2" → öğe, kapsayıcısı ekrandan geçerken viewport'un
+       %20'si kadar ters yönde kayar. Kapsayıcı varsayılan olarak ebeveyn;
+       daha geniş bir alan isteniyorsa data-parallax-scope ile işaretlenir. */
+    const parallaxTweens: gsap.core.Tween[] = [];
+
+    if (!reduced) {
+      gsap.utils.toArray<HTMLElement>("[data-parallax]").forEach((el) => {
+        const amount = Number(el.dataset.parallax) || 0.15;
+        const scope =
+          (el.closest("[data-parallax-scope]") as HTMLElement | null) ?? el.parentElement ?? el;
+        const travel = () => (amount * window.innerHeight) / 2;
+
+        parallaxTweens.push(
+          gsap.fromTo(
+            el,
+            { y: travel },
+            {
+              y: () => -travel(),
+              ease: "none",
+              scrollTrigger: {
+                trigger: scope,
+                start: "top bottom",
+                end: "bottom top",
+                scrub: 0.8,
+                invalidateOnRefresh: true,
+                refreshPriority: -1,
+              },
+            },
+          ),
+        );
+      });
+    }
+
     /* ── Reveal ── */
     const revealAll = () => {
       const els = document.querySelectorAll<HTMLElement>("[data-reveal]:not(.is-in)");
@@ -81,8 +147,14 @@ export default function SmoothScroll() {
     }
 
     revealAll();
+    fitLines();
+    document.fonts?.ready.then(() => {
+      fitLines();
+      ScrollTrigger.refresh();
+    });
     window.addEventListener("scroll", revealAll, { passive: true });
     window.addEventListener("resize", revealAll);
+    window.addEventListener("resize", fitLines);
     lenis?.on("scroll", revealAll);
     const t = window.setTimeout(revealAll, 400);
 
@@ -101,9 +173,14 @@ export default function SmoothScroll() {
     document.addEventListener("click", onClick);
 
     return () => {
+      parallaxTweens.forEach((tween) => {
+        tween.scrollTrigger?.kill();
+        tween.kill();
+      });
       document.removeEventListener("click", onClick);
       window.removeEventListener("scroll", revealAll);
       window.removeEventListener("resize", revealAll);
+      window.removeEventListener("resize", fitLines);
       window.clearTimeout(t);
       io?.disconnect();
       cancelAnimationFrame(rafId);

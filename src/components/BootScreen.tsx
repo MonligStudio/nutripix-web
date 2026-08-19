@@ -39,7 +39,11 @@ export default function BootScreen() {
     const html = document.documentElement;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    if (reduced) {
+    /* ?boot=0 → açılış animasyonunu tamamen atlar (hata ayıklama ve
+       ekran görüntüsü alırken 5.5 saniye beklememek için). */
+    const skip = new URLSearchParams(window.location.search).get("boot") === "0";
+
+    if (reduced || skip) {
       markBootDone();
       setHidden(true);
       return;
@@ -67,24 +71,40 @@ export default function BootScreen() {
     const q = gsap.utils.selector(el);
     const ctx = gsap.context(() => {
       const frame = q<SVGPathElement>(".boot-progress-path");
-      const markPaths = q<SVGPathElement>(".boot-mark-draw");
+      const corners = q<SVGPathElement>(".boot-corner");
+      const strokes = q<SVGPathElement>(".boot-draw");
       const progress = { value: 0 };
       let statusIndex = -1;
 
       frame.forEach((path) => path.setAttribute("stroke-dashoffset", "1"));
-      markPaths.forEach((path) => {
+      strokes.forEach((path) => {
         const length = path.getTotalLength();
         gsap.set(path, { strokeDasharray: length, strokeDashoffset: length });
       });
+
+      /* Köşe ayraçları vizör gibi dışarıdan içeri kapanır: her biri kendi
+         köşesinin diyagonalinden gelir. */
+      const CORNER_OFFSET = [
+        { x: -16, y: -16 },
+        { x: 16, y: -16 },
+        { x: 16, y: 16 },
+        { x: -16, y: 16 },
+      ];
+      corners.forEach((path, i) => {
+        gsap.set(path, { opacity: 0, ...CORNER_OFFSET[i % 4] });
+      });
+
       gsap.set(q(".boot-device"), { opacity: 0 });
       gsap.set(q(".boot-app"), { opacity: 0 });
-      gsap.set(q(".boot-brand"), { opacity: 0, y: 10 });
-      gsap.set(q(".boot-meta"), { opacity: 0, y: 8 });
-      gsap.set(q(".boot-mark-corner"), {
-        scale: 1.5,
-        transformOrigin: "24px 24px",
+      gsap.set(q(".boot-apple-group"), { opacity: 0, scale: 0.84, svgOrigin: "24 26" });
+      gsap.set(q(".boot-brand-inner"), {
+        clipPath: "inset(0% 100% 0% 0%)",
+        letterSpacing: "0.34em",
       });
-      gsap.set(q(".boot-pulse"), { opacity: 0, scale: 0.4 });
+      gsap.set(q(".boot-rule"), { scaleX: 0, transformOrigin: "center center" });
+      gsap.set(q(".boot-meta"), { opacity: 0, y: 10 });
+      gsap.set(q(".boot-flash"), { opacity: 0, scale: 0.5 });
+      gsap.set(q(".boot-scan"), { opacity: 0, top: "6%" });
 
       const updateProgress = () => {
         const value = progress.value;
@@ -107,28 +127,64 @@ export default function BootScreen() {
       });
       timeline.current = tl;
 
-      tl.to(q(".boot-mark-corner"), { strokeDashoffset: 0, duration: 0.38, stagger: 0.045 }, 0.18)
+      /* Logo girişi: vizör kapanır → tarama geçer → elma çizilir → odak
+         kilitlenir → marka adı maskeyle açılır. Çerçeve (telefon hattı) ve
+         yüzde sayacı kendi zamanlamasını korur. */
+      tl.to(
+        corners,
+        {
+          opacity: 1,
+          x: 0,
+          y: 0,
+          strokeDashoffset: 0,
+          duration: 0.9,
+          ease: "expo.out",
+          stagger: 0.06,
+        },
+        0.1,
+      )
+        .to(q(".boot-scan"), { opacity: 1, duration: 0.22 }, 0.55)
+        .to(q(".boot-scan"), { top: "94%", duration: 0.9, ease: "power2.inOut" }, 0.6)
+        .to(q(".boot-scan"), { opacity: 0, duration: 0.3 }, 1.32)
         .to(
-          q(".boot-mark-corner"),
-          { scale: 1, duration: 0.62, stagger: 0.045, ease: "back.out(2.1)" },
-          0.24,
+          q(".boot-apple-group"),
+          { opacity: 1, scale: 1, duration: 0.7, ease: "power3.out" },
+          0.95,
         )
-        .to(q(".boot-mark-apple"), { strokeDashoffset: 0, duration: 0.72 }, 0.66)
-        .to(q(".boot-mark-leaf"), { strokeDashoffset: 0, duration: 0.3 }, 1.16)
+        .to(q(".boot-apple"), { strokeDashoffset: 0, duration: 0.8, ease: "power2.inOut" }, 0.95)
+        .to(q(".boot-leaf"), { strokeDashoffset: 0, duration: 0.38 }, 1.55)
+        /* odak kilidi */
         .fromTo(
           q(".boot-mark"),
-          { scale: 0.96 },
-          { scale: 1, duration: 0.7, ease: "elastic.out(1, 0.55)" },
-          1.34,
+          { scale: 1.045 },
+          { scale: 1, duration: 0.9, ease: "power4.out" },
+          1.6,
         )
         .fromTo(
-          q(".boot-pulse"),
-          { opacity: 0.7, scale: 0.45 },
-          { opacity: 0, scale: 1.65, duration: 0.85 },
-          1.34,
+          q(".boot-flash"),
+          { opacity: 0.5, scale: 0.5 },
+          { opacity: 0, scale: 1.45, duration: 0.95, ease: "power2.out" },
+          1.62,
         )
-        .to(q(".boot-brand"), { opacity: 1, y: 0, duration: 0.5 }, 1.43)
-        .to(q(".boot-meta"), { opacity: 1, y: 0, duration: 0.42 }, 1.58)
+        /* marka adı: soldan açılan maske + daralan harf aralığı */
+        .to(
+          q(".boot-brand-inner"),
+          {
+            clipPath: "inset(0% 0% 0% 0%)",
+            letterSpacing: "0.02em",
+            duration: 1.1,
+            ease: "expo.out",
+          },
+          1.3,
+        )
+        .to(q(".boot-rule"), { scaleX: 1, duration: 0.75, ease: "power3.out" }, 1.7)
+        .to(q(".boot-meta"), { opacity: 1, y: 0, duration: 0.55 }, 1.55)
+        /* bekleme boyunca çok hafif nefes */
+        .to(
+          q(".boot-mark"),
+          { scale: 1.025, duration: 1.15, ease: "sine.inOut", repeat: 1, yoyo: true },
+          2.6,
+        )
         .to(
           progress,
           {
@@ -139,7 +195,7 @@ export default function BootScreen() {
           },
           1.72,
         )
-        .to(q(".boot-progress-path"), { filter: "drop-shadow(0 0 7px rgba(74,222,128,.9))", duration: 0.2 }, 4.78)
+        .to(q(".boot-progress-path"), { filter: "drop-shadow(0 0 7px rgba(106,159,66,.9))", duration: 0.2 }, 4.78)
         .to(q(".boot-mark, .boot-brand, .boot-meta"), { opacity: 0, y: -8, duration: 0.3 }, 4.98)
         .to(q(".boot-device"), { opacity: 1, duration: 0.34 }, 5)
         .to(q(".boot-frame-art"), { opacity: 0, duration: 0.32 }, 5.04)
@@ -168,11 +224,7 @@ export default function BootScreen() {
   if (hidden) return null;
 
   return (
-    <div ref={root} className="boot-screen fixed inset-0 z-[999] overflow-hidden bg-ink">
-      <div className="hero-light hero-light-left" />
-      <div className="hero-light hero-light-right" />
-      <div className="hero-grid" aria-hidden="true" />
-
+    <div ref={root} className="boot-screen fixed inset-0 z-[999] overflow-hidden bg-base">
       <div className="device-lock boot-device-lock">
         <div className="boot-device absolute inset-0">
           <PhoneFrame>
@@ -198,9 +250,9 @@ export default function BootScreen() {
         >
           <defs>
             <linearGradient id="boot-frame-gradient" x1="0" y1="0" x2="0.9" y2="1">
-              <stop offset="0" stopColor="#87edac" />
-              <stop offset="0.48" stopColor="#4ade80" />
-              <stop offset="1" stopColor="#238f5c" />
+              <stop offset="0" stopColor="#8ec457" />
+              <stop offset="0.48" stopColor="#6a9f42" />
+              <stop offset="1" stopColor="#3f5a2b" />
             </linearGradient>
           </defs>
           <path
@@ -216,29 +268,73 @@ export default function BootScreen() {
         </svg>
 
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="-translate-y-3 text-center">
-            <div className="relative mx-auto w-fit">
-              <span className="boot-pulse absolute left-1/2 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full border border-mint/70" />
-              <svg viewBox="0 0 48 48" fill="none" className="boot-mark h-[74px] w-[74px] text-mint drop-shadow-[0_0_22px_rgba(74,222,128,.36)]" aria-hidden="true">
-                <g stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+          <div className="-translate-y-4 text-center">
+            {/* vizör + elma: köşeler dışarıdan kapanır, tarama çizgisi geçer,
+                elma çizilir, sonunda odak kilitlenir */}
+            <div className="boot-mark-stage relative mx-auto w-fit">
+              <span className="boot-flash" aria-hidden="true" />
+              <svg
+                viewBox="0 0 48 48"
+                fill="none"
+                className="boot-mark relative block h-[84px] w-[84px] text-leaf"
+                aria-hidden="true"
+              >
+                <g
+                  stroke="currentColor"
+                  strokeWidth="2.4"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
                   {MARK_CORNERS.map((path) => (
-                    <path key={path} d={path} pathLength={1} strokeDasharray="1" strokeDashoffset="1" className="boot-mark-corner boot-mark-draw" opacity=".74" />
+                    <path
+                      key={path}
+                      d={path}
+                      pathLength={1}
+                      strokeDasharray="1"
+                      strokeDashoffset="1"
+                      className="boot-corner boot-draw"
+                      opacity=".85"
+                    />
                   ))}
-                  <path d={APPLE} pathLength={1} strokeDasharray="1" strokeDashoffset="1" className="boot-mark-apple boot-mark-draw" />
-                  <path d={LEAF} pathLength={1} strokeDasharray="1" strokeDashoffset="1" className="boot-mark-leaf boot-mark-draw" />
+                  <g className="boot-apple-group">
+                    <path
+                      d={APPLE}
+                      pathLength={1}
+                      strokeDasharray="1"
+                      strokeDashoffset="1"
+                      className="boot-apple boot-draw"
+                    />
+                    <path
+                      d={LEAF}
+                      pathLength={1}
+                      strokeDasharray="1"
+                      strokeDashoffset="1"
+                      className="boot-leaf boot-draw"
+                    />
+                  </g>
                 </g>
               </svg>
+              <span className="boot-scan" aria-hidden="true" />
             </div>
 
-            <p className="boot-brand mt-5 font-display text-[27px] font-extrabold tracking-[-0.045em]">
-              Nutri<span className="text-mint">Pix</span>
+            <p className="boot-brand mt-7 font-display text-[38px] uppercase leading-none">
+              <span lang="en" className="boot-brand-inner">
+                Nutri<span className="text-leaf">Pix</span>
+              </span>
             </p>
 
-            <div className="boot-meta mt-8">
-              <p className="font-display text-[31px] font-bold leading-none tabular-nums">
-                <span ref={percentage}>0</span><span className="ml-0.5 text-[15px] text-mint">%</span>
+            <span className="boot-rule" aria-hidden="true" />
+
+            <div className="boot-meta mt-7">
+              <p className="font-display text-[38px] leading-none tabular-nums">
+                <span ref={percentage}>0</span>
+                <span className="ml-0.5 text-[15px] text-leaf">%</span>
               </p>
-              <p ref={status} aria-live="polite" className="mt-2 text-[10px] uppercase tracking-[0.19em] text-fg-3">
+              <p
+                ref={status}
+                aria-live="polite"
+                className="mt-2 text-[10px] uppercase tracking-[0.19em] text-fg-3"
+              >
                 {STATUS[0]}
               </p>
             </div>

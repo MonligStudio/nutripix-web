@@ -8,72 +8,66 @@ export default function CtaFooter() {
   return (
     <>
       {/* ── kapanış çağrısı ── */}
-      <section className="relative overflow-hidden py-24 lg:py-32">
+      <section
+        data-color="orange"
+        data-parallax-scope
+        className="relative overflow-hidden py-28 lg:py-40"
+      >
+        {/* yanda süzülen telefon — dar ekranda düşer */}
         <div
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(60% 60% at 50% 100%, rgba(74,222,128,.14) 0%, transparent 70%)",
-          }}
-        />
-
-        <div className="relative mx-auto max-w-[1280px] px-5 lg:px-10">
-          <div className="relative overflow-hidden rounded-[32px] border border-line bg-ink-2/70 px-7 py-14 lg:px-16 lg:py-20">
-            <div
-              className="pointer-events-none absolute inset-0 opacity-90"
-              style={{
-                background:
-                  "radial-gradient(70% 90% at 88% 50%, rgba(74,222,128,.10) 0%, transparent 68%)",
-              }}
+          data-parallax="0.3"
+          className="pointer-events-none absolute right-[4%] top-1/2 hidden w-[210px] -translate-y-1/2 rotate-[-7deg] opacity-95 xl:block"
+        >
+          <PhoneFrame buttons={false} glow={false}>
+            <img
+              src={withBasePath("/screens/fab.webp")}
+              alt=""
+              width={786}
+              height={1704}
+              className="absolute inset-0 h-full w-full object-cover"
+              loading="lazy"
             />
+          </PhoneFrame>
+        </div>
 
-            <div className="relative grid items-center gap-12 lg:grid-cols-[1.15fr_0.85fr]">
-              <div>
-                <h2 data-reveal className="h-display text-[clamp(32px,5.4vw,62px)]">
-                  Bugün öğlen ne yediğini
-                  <br />
-                  <span className="text-gradient-mint">biliyor musun?</span>
-                </h2>
-                <p
-                  data-reveal
-                  data-reveal-delay="90"
-                  className="mt-6 max-w-[52ch] text-[15.5px] leading-relaxed text-fg-2 lg:text-[17px]"
-                >
-                  NutriPix'i indir, ilk öğününü 7 saniyede kaydet. 7 gün ücretsiz, kart
-                  bilgisi istemeden.
-                </p>
-                <div data-reveal data-reveal-delay="180" className="mt-9">
-                  <StoreBadges />
-                </div>
-              </div>
+        <div className="relative mx-auto max-w-[1280px] px-5 text-center lg:px-10">
+          <div data-reveal className="flex items-center justify-center gap-3">
+            <span className="h-px w-10 bg-accent" />
+            <span className="eyebrow !text-accent">7 gün ücretsiz</span>
+            <span className="h-px w-10 bg-accent" />
+          </div>
 
-              <div data-reveal data-reveal-delay="120" className="relative flex justify-center lg:justify-end">
-                <div className="w-[190px] rotate-[-5deg] lg:w-[230px]">
-                  <PhoneFrame buttons={false}>
-                    <img
-                      src={withBasePath("/screens/fab.webp")}
-                      alt="NutriPix öğün ekleme menüsü"
-                      width={786}
-                      height={1704}
-                      className="absolute inset-0 h-full w-full object-cover"
-                      loading="lazy"
-                    />
-                  </PhoneFrame>
-                </div>
-              </div>
-            </div>
+          <h2 data-reveal data-reveal-delay="80" className="h-giant mt-8">
+            <span data-fit className="block whitespace-nowrap">Bugün öğlen ne yedin?</span>
+          </h2>
+
+          <p
+            data-reveal
+            data-reveal-delay="160"
+            className="mx-auto mt-10 max-w-[48ch] text-[16px] leading-relaxed text-fg-2 lg:text-[18px]"
+          >
+            NutriPix&apos;i indir, ilk öğününü 7 saniyede kaydet. Kart bilgisi istemeden,
+            tek dokunuşla.
+          </p>
+
+          <div
+            data-reveal
+            data-reveal-delay="240"
+            className="mt-10 flex justify-center"
+          >
+            <StoreBadges />
           </div>
         </div>
       </section>
 
       {/* ── footer ── */}
-      <footer className="bg-ink">
+      <footer data-color="ink" className="bg-base">
         <div className="mx-auto max-w-[1280px] px-5 py-16 lg:px-10">
           <div className="grid gap-12 lg:grid-cols-[1.3fr_repeat(3,0.9fr)]">
             <div>
               <div className="flex items-center gap-2.5">
-                <LogoMark className="h-8 w-8 text-mint" />
-                <Wordmark className="text-[19px]" />
+                <LogoMark className="h-8 w-8 text-leaf" />
+                <Wordmark className="text-[24px]" />
               </div>
               <p className="mt-5 max-w-[36ch] text-[13px] leading-relaxed text-fg-3">
                 Yapay zekâ destekli beslenme asistanı. Yemeğini çek, kalorisini bil,

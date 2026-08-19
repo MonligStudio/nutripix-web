@@ -4,9 +4,14 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { journey } from "@/lib/content";
+import { themes } from "@/lib/palette";
 import { PHONE, PHONE_STYLE, SCREEN, STAGE } from "@/lib/stage";
 import { withBasePath } from "@/lib/paths";
 import { HandLayer, thumbFrames } from "./Hand";
+
+/* Bu bölüm her zaman siyah temada; ray renkleri oradan sabit alınır. */
+const RAIL_ON = themes.ink.accent;
+const RAIL_OFF = "#3a332a";
 
 const N = journey.length;
 const INTRO = 0.6;
@@ -232,8 +237,8 @@ export default function Journey() {
 
         /* 6 — ilerleme rayı */
         tl.to(fills[i], { scaleX: 1, duration: 0.72 }, t0 + 0.18);
-        tl.to(dots[i], { backgroundColor: "#4ade80", duration: 0.2 }, t0 + 0.5);
-        tl.to(dots[i - 1], { backgroundColor: "#30363d", duration: 0.2 }, t0 + 0.5);
+        tl.to(dots[i], { backgroundColor: RAIL_ON, duration: 0.2 }, t0 + 0.5);
+        tl.to(dots[i - 1], { backgroundColor: RAIL_OFF, duration: 0.2 }, t0 + 0.5);
       }
 
       tl.to({}, { duration: TAIL });
@@ -252,6 +257,7 @@ export default function Journey() {
     <section
       ref={sectionRef}
       id="nasil"
+      data-color="olive"
       className="relative"
       style={{ height: `${TOTAL * 96}vh` }}
     >
@@ -263,11 +269,11 @@ export default function Journey() {
                 hangi bölümde olduğunu kaybetmesin. */}
             <div className="mb-5 lg:mb-8">
               <div className="flex items-center gap-3">
-                <span className="h-px w-8 bg-mint/60" />
-                <span className="eyebrow !text-mint">Nasıl kullanılır</span>
+                <span className="h-px w-8 bg-accent/60" />
+                <span className="eyebrow !text-accent">Nasıl kullanılır</span>
               </div>
-              <h2 className="h-display mt-3 text-[clamp(21px,2.8vw,34px)] leading-[1.06]">
-                Uygulamayı <span className="text-gradient-mint">adım adım</span> gez
+              <h2 className="h-display mt-4 text-[clamp(26px,3.4vw,44px)]">
+                Uygulamayı <span className="text-accent">adım adım</span> gez
               </h2>
             </div>
 
@@ -289,7 +295,7 @@ export default function Journey() {
                     <span className="eyebrow !text-fg-2">{s.chapter}</span>
                   </div>
 
-                  <h3 className="h-display mt-3 text-[clamp(23px,4.2vw,50px)] lg:mt-5">
+                  <h3 className="h-display mt-4 text-[clamp(30px,5.2vw,72px)] lg:mt-6">
                     {s.title}
                   </h3>
 
@@ -301,7 +307,7 @@ export default function Journey() {
                     {s.points.map((p) => (
                       <li
                         key={p}
-                        className="rounded-full border border-line bg-ink-2/80 px-3 py-1.5 text-[11px] text-fg-2 lg:px-3.5 lg:text-[12.5px]"
+                        className="rounded-full border border-line bg-surface/80 px-3 py-1.5 text-[11px] text-fg-2 lg:px-3.5 lg:text-[12.5px]"
                       >
                         {p}
                       </li>
@@ -318,12 +324,12 @@ export default function Journey() {
                   <span
                     data-rail-dot
                     className="h-1.5 w-1.5 shrink-0 rounded-full"
-                    style={{ backgroundColor: i === 0 ? "#4ade80" : "#30363d" }}
+                    style={{ backgroundColor: i === 0 ? RAIL_ON : RAIL_OFF }}
                   />
                   <span className="relative h-px flex-1 overflow-hidden bg-line-2">
                     <span
                       data-rail-fill
-                      className="absolute inset-0 block bg-mint"
+                      className="absolute inset-0 block bg-accent"
                     />
                   </span>
                 </div>
@@ -350,7 +356,7 @@ export default function Journey() {
                   style={{
                     ...PHONE_STYLE,
                     background:
-                      "radial-gradient(60% 46% at 50% 46%, rgba(74,222,128,.20) 0%, transparent 72%)",
+                      "radial-gradient(60% 46% at 50% 46%, color-mix(in oklab, var(--accent) 26%, transparent) 0%, transparent 72%)",
                     filter: "blur(28px)",
                     transform: "scale(1.35)",
                   }}
@@ -396,7 +402,7 @@ export default function Journey() {
                       className="tap-ripple pointer-events-none absolute z-[60] block aspect-square w-[26%] rounded-full"
                       style={{
                         background:
-                          "radial-gradient(circle, rgba(255,255,255,.55) 0%, rgba(74,222,128,.35) 38%, rgba(74,222,128,0) 68%)",
+                          "radial-gradient(circle, rgba(255,255,255,.6) 0%, color-mix(in oklab, var(--accent) 45%, transparent) 38%, transparent 68%)",
                         boxShadow: "0 0 0 1px rgba(255,255,255,.35) inset",
                       }}
                     />

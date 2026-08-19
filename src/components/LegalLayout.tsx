@@ -15,7 +15,7 @@ export default function LegalLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-ink">
+    <div className="min-h-screen bg-base">
       <header className="border-b border-line">
         <div className="mx-auto flex h-[68px] max-w-[820px] items-center justify-between px-5">
           <Link href="/" className="transition-opacity hover:opacity-80">
@@ -34,7 +34,7 @@ export default function LegalLayout({
       </header>
 
       <main className="mx-auto max-w-[820px] px-5 py-16 lg:py-24">
-        <p className="eyebrow !text-mint">Yasal</p>
+        <p className="eyebrow !text-accent">Yasal</p>
         <h1 className="h-display mt-4 text-[clamp(32px,6vw,52px)]">{title}</h1>
         <p className="mt-4 text-[12.5px] text-fg-3">Son güncelleme: {updated}</p>
         <p className="mt-8 text-[16px] leading-relaxed text-fg-2">{intro}</p>
@@ -43,10 +43,10 @@ export default function LegalLayout({
 
         <div className="legal space-y-12">{children}</div>
 
-        <div className="mt-16 rounded-2xl border border-line bg-ink-2/60 p-6">
+        <div className="mt-16 rounded-2xl border border-line bg-surface/60 p-6">
           <p className="text-[14px] text-fg-2">
             Bu metinle ilgili sorularınız için{" "}
-            <a href={`mailto:${site.email}`} className="text-mint hover:underline">
+            <a href={`mailto:${site.email}`} className="text-accent hover:underline">
               {site.email}
             </a>{" "}
             adresine yazabilirsiniz.
@@ -87,7 +87,7 @@ export function Article({
   return (
     <section id={id} className="scroll-mt-24">
       <h2 className="flex items-baseline gap-3 text-[20px] lg:text-[23px]">
-        <span className="text-[14px] font-bold text-mint">{n}</span>
+        <span className="text-[14px] font-bold text-accent">{n}</span>
         {title}
       </h2>
       <div className="mt-4 space-y-4 text-[14.5px] leading-relaxed text-fg-2">{children}</div>
@@ -100,7 +100,7 @@ export function Bullets({ items }: { items: string[] }) {
     <ul className="space-y-2.5">
       {items.map((t) => (
         <li key={t} className="flex gap-3">
-          <span className="mt-[9px] h-1 w-1 shrink-0 rounded-full bg-mint" />
+          <span className="mt-[9px] h-1 w-1 shrink-0 rounded-full bg-accent" />
           <span>{t}</span>
         </li>
       ))}
@@ -119,7 +119,7 @@ export function Table({
     <div className="overflow-x-auto rounded-2xl border border-line">
       <table className="w-full min-w-[460px] border-collapse text-left text-[13.5px]">
         <thead>
-          <tr className="bg-ink-2">
+          <tr className="bg-surface">
             {head.map((h) => (
               <th key={h} className="px-5 py-3.5 font-semibold text-fg">
                 {h}

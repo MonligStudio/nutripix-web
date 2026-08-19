@@ -61,7 +61,7 @@ export const journey: JourneyStep[] = [
     points: ["Kalan kalori halkası", "Protein · Karbonhidrat · Yağ", "Haftalık gün şeridi"],
     tap: null,
     enter: "none",
-    accent: "var(--color-mint)",
+    accent: "var(--color-accent)",
   },
   {
     id: "history",
@@ -73,7 +73,7 @@ export const journey: JourneyStep[] = [
     points: ["Haftalık & aylık görünüm", "Kalori trend grafiği", "Ortalama makro raporu"],
     tap: { x: 0.313, y: 0.9 },
     enter: "slide-left",
-    accent: "var(--color-sky)",
+    accent: "var(--color-blush)",
   },
   {
     id: "goals",
@@ -85,7 +85,7 @@ export const journey: JourneyStep[] = [
     points: ["Otomatik kalori & makro", "Kilo ver / koru / kas yap", "1 hafta – 3 ay projeksiyonu"],
     tap: { x: 0.687, y: 0.9 },
     enter: "slide-left",
-    accent: "var(--color-coral)",
+    accent: "var(--color-orange)",
   },
   {
     id: "settings",
@@ -97,7 +97,7 @@ export const journey: JourneyStep[] = [
     points: ["Türkçe & English", "Açık / koyu tema", "Hatırlatma bildirimleri"],
     tap: { x: 0.874, y: 0.9 },
     enter: "slide-left",
-    accent: "var(--color-lav)",
+    accent: "var(--color-blush)",
   },
   {
     id: "fab",
@@ -109,7 +109,7 @@ export const journey: JourneyStep[] = [
     points: ["Fotoğrafla ekle", "Barkod tara", "Yazarak anlat", "Elle gir"],
     tap: { x: 0.5, y: 0.843 },
     enter: "zoom",
-    accent: "var(--color-mint)",
+    accent: "var(--color-accent)",
   },
   {
     id: "ai",
@@ -121,7 +121,7 @@ export const journey: JourneyStep[] = [
     points: ["Doğal dille giriş", "Sık yenenler için kısayol", "Kalan kalorine göre öneri"],
     tap: { x: 0.844, y: 0.768 },
     enter: "slide-up",
-    accent: "var(--color-teal)",
+    accent: "var(--color-orange)",
   },
   {
     id: "manual",
@@ -133,7 +133,7 @@ export const journey: JourneyStep[] = [
     points: ["7 besin alanı", "Öğün tipi seçimi", "Saniyeler içinde kayıt"],
     tap: { x: 0.528, y: 0.875 },
     enter: "slide-up",
-    accent: "var(--color-amber)",
+    accent: "var(--color-camel)",
   },
   {
     id: "barcode",
@@ -145,7 +145,7 @@ export const journey: JourneyStep[] = [
     points: ["Anlık barkod okuma", "Global ürün veritabanı", "Porsiyon çarpanı"],
     tap: { x: 0.359, y: 0.768 },
     enter: "zoom",
-    accent: "var(--color-sky)",
+    accent: "var(--color-camel)",
   },
   {
     id: "photo",
@@ -157,98 +157,9 @@ export const journey: JourneyStep[] = [
     points: ["Kamera veya galeri", "Porsiyon tahmini", "Sağlık puanı & detaylı analiz"],
     tap: { x: 0.156, y: 0.768 },
     enter: "zoom",
-    accent: "var(--color-mint)",
+    accent: "var(--color-accent)",
   },
 ];
-
-/* ──────────────────────────────── Özellikler ──────────────────────────────── */
-
-export type Feature = {
-  icon: string;
-  title: string;
-  body: string;
-  color: string;
-  span?: string;
-};
-
-export const features: Feature[] = [
-  {
-    icon: "camera",
-    title: "AI Fotoğraf Analizi",
-    body: "Tabağının fotoğrafını çek; görüntü modeli yemeği tanısın, kaloriyi ve makroları saniyeler içinde hesaplasın. Tartıya, listeye, tahmine gerek yok.",
-    color: "var(--color-mint)",
-    span: "lg:col-span-2 lg:row-span-2",
-  },
-  {
-    icon: "sparkles",
-    title: "Detaylı AI Raporu",
-    body: "İçerik dökümü, porsiyon tahmini ve sağlık puanıyla her öğünün arkasındaki hikâyeyi gör.",
-    color: "var(--color-lav)",
-  },
-  {
-    icon: "barcode",
-    title: "Barkod Tarama",
-    body: "Paketli ürünü okut, besin değerleri global veritabanından anında gelsin.",
-    color: "var(--color-sky)",
-  },
-  {
-    icon: "chart",
-    title: "Günlük Besin Takibi",
-    body: "Kalori, protein, karbonhidrat, yağ, lif ve şeker — hepsi tek ekranda, tek bakışta.",
-    color: "var(--color-coral)",
-    span: "lg:col-span-2",
-  },
-  {
-    icon: "drop",
-    title: "Su Takibi",
-    body: "Günlük su tüketimini tek dokunuşla ekle, ana ekran widget'ından takip et.",
-    color: "var(--color-sky)",
-  },
-  {
-    icon: "scale",
-    title: "Kilo Takibi",
-    body: "Kilonu kaydet, grafiğini izle, hedefe kalan mesafeyi haftalık projeksiyonla gör.",
-    color: "var(--color-teal)",
-  },
-  {
-    icon: "flame",
-    title: "Günlük Seri",
-    body: "Her gün takip yaptıkça serin büyür. Motivasyonu alışkanlığa çeviren en basit mekanizma.",
-    color: "var(--color-gold)",
-  },
-  {
-    icon: "bell",
-    title: "Akıllı Hatırlatma",
-    body: "Öğün saatlerinde nazik bir dokunuş. Saatleri sen belirle, uygulama seni takip etsin.",
-    color: "var(--color-amber)",
-  },
-  {
-    icon: "globe",
-    title: "Türkçe & English",
-    body: "Uygulamanın tamamı iki dilde. Tema tercihini de açık/koyu olarak sen seç.",
-    color: "var(--color-pink)",
-  },
-];
-
-/* ──────────────────────────────── Nasıl çalışır ──────────────────────────────── */
-
-export const steps = [
-  {
-    n: "01",
-    title: "Profilini oluştur",
-    body: "Boy, kilo, yaş, aktivite seviyesi ve hedefini gir. NutriPix günlük kalori ve makro hedeflerini senin için hesaplasın.",
-  },
-  {
-    n: "02",
-    title: "Öğününü kaydet",
-    body: "Fotoğrafını çek, barkodunu okut, yazarak anlat ya da elle gir. Dört yoldan hangisi hızlıysa onu kullan.",
-  },
-  {
-    n: "03",
-    title: "Gidişatını izle",
-    body: "Günlük halka, haftalık grafikler ve kilo trendiyle ilerlemeni gör. Serini büyüt, alışkanlığı kalıcı yap.",
-  },
-] as const;
 
 /* ──────────────────────────────── Fiyatlandırma ──────────────────────────────── */
 
@@ -352,198 +263,131 @@ export const footerLinks = {
 } as const;
 
 /* ────────────────────────────────────────────────────────────
-   "Ne işe yarar" — 3B blok sahnesi
+   "Ne işe yarar" — kalın çizgili özellik şeridi
 
-   Eski bento grid'in birebir 3B karşılığı: her hücre bir bloğa dönüştü ve
-   hücrenin oranını korudu. 2×2 hücre küp, 2×1 hücre dikdörtgen prizma oldu.
-   Bloklar çok uzaktan (z: -30000) uçarak gelip grid düzenine oturuyor.
-   Yüzlerde görsel yok — her yüz o özelliği anlatan bir yazı taşıyor.
-
-   Hedef konumlar artık yüzde değil, GRID SLOTU: geniş ekranda 5×3, dar
-   ekranda 3×5. Hücre boyutu, boşluklar ve kenar payı çalışma anında
-   viewport'tan hesaplanır (FeatureCubes/layout), böylece bloklar her
-   ekranda ortada toplanır, birbirine değmez ve kenarlara taşmaz.
+   Bölümün arkasında scroll ile çizilen bir hat var; her "beat" bu hattın
+   üstüne oturur. `layout` satırın biçimini belirler:
+     solo  → ortada tek telefon
+     left  → kart solda, telefon sağda
+     right → telefon solda, kart sağda
+     note  → geniş, telefonsuz kapanış kartı
    ──────────────────────────────────────────────────────────── */
 
-/** Blok gridinin iki varyantı — hangisinin daha büyük hücre verdiğine
-    çalışma anında karar verilir (dar/uzun ekranda 3×5, geniş ekranda 5×3). */
-export const featureGrids = {
-  wide: { cols: 5, rows: 3 },
-  narrow: { cols: 3, rows: 5 },
-} as const;
-
-export type FeatureBlock = {
+export type SpotBeat = {
+  id: string;
+  layout: "solo" | "left" | "right" | "note";
+  screen?: string;
+  alt?: string;
+  tag: string;
   title: string;
   body: string;
-  tag: string;
-  /** ön yüzdeki mini mockup türü */
-  visual: "ring" | "list" | "barcode" | "macros" | "water" | "chart" | "streak" | "bell" | "lang";
-  /** öne çıkan rakam/ifade */
-  stat: string;
-  statLabel: string;
-  color: string;
-  /** hücre birimi: 1 = kare hücre */
-  w: number;
-  h: number;
-  /** 5×3 gridde sol üst hücresi (c: sütun, r: satır) */
-  at: { c: number; r: number };
-  /** 3×5 (dar) gridde sol üst hücresi */
-  atSm: { c: number; r: number };
-  spin?: number;
-  from: { top: number; left: number; rx: number; ry: number; rz: number };
-  to: { rx: number; ry: number; rz: number };
+  stat?: string;
+  statLabel?: string;
+  chips?: string[];
 };
 
-export const featureBlocks: FeatureBlock[] = [
+export const spotlight: SpotBeat[] = [
   {
-    title: "AI Fotoğraf Analizi",
-    body: "Tabağını çek; model yemeği tanır, kaloriyi ve makroları çıkarır. Porsiyon tahmini ve sağlık puanı da gelir.",
-    tag: "Tartıya gerek yok",
-    visual: "ring",
+    id: "photo",
+    layout: "solo",
+    screen: "/screens/photo.webp",
+    alt: "NutriPix fotoğraftan besin analizi ekranı",
+    tag: "Fotoğraf",
+    title: "Tabağını çek",
+    body: "Görüntü modeli yemeği tanır, porsiyonu tahmin eder; kalori ve makrolar günlüğüne kendiliğinden düşer.",
     stat: "~7 sn",
-    statLabel: "fotoğraftan kayda",
-    color: "var(--color-mint)",
-    w: 2, h: 2,
-    at: { c: 0, r: 0 }, atSm: { c: 0, r: 0 },
-    from: { top: -60, left: 34, rx: 360, ry: -360, rz: -48 },
-    to: { rx: -2, ry: 4, rz: 0 },
+    statLabel: "bir öğünü kaydetme süresi",
   },
   {
-    title: "Detaylı AI Raporu",
-    body: "Her bileşen ayrı satırda: miktar, kalori, makro payı.",
-    tag: "Öğünün hikâyesi",
-    visual: "list",
+    id: "ai",
+    layout: "left",
+    screen: "/screens/ai.webp",
+    alt: "NutriPix yazarak öğün ekleme ekranı",
+    tag: "Yapay zekâ",
+    title: "Ya da sadece anlat",
+    body: "“2 yumurta, bir dilim tam buğday ekmeği, beyaz peynir, çay” yaz — model porsiyonları çözer, rakamları senin yerine doldurur. İçerik dökümü ve sağlık puanı da gelir.",
     stat: "6 bileşen",
     statLabel: "ortalama döküm",
-    color: "var(--color-lav)",
-    w: 1, h: 1, spin: 180,
-    at: { c: 2, r: 0 }, atSm: { c: 2, r: 0 },
-    from: { top: -38, left: 30, rx: -360, ry: 360, rz: 90 },
-    to: { rx: 2, ry: -3, rz: 0 },
   },
   {
-    title: "Barkod Tarama",
-    body: "Paketli ürünü okut, değerler anında gelsin.",
-    tag: "Anında sonuç",
-    visual: "barcode",
-    stat: "3M+",
-    statLabel: "ürün veritabanı",
-    color: "var(--color-sky)",
-    w: 1, h: 1,
-    at: { c: 3, r: 0 }, atSm: { c: 2, r: 1 },
-    from: { top: -66, left: 52, rx: -360, ry: -360, rz: -180 },
-    to: { rx: -3, ry: 3, rz: 0 },
+    id: "barcode",
+    layout: "right",
+    screen: "/screens/barcode.webp",
+    alt: "NutriPix barkod tarama ekranı",
+    tag: "Barkod",
+    title: "Paketliyse okut, geç",
+    body: "Market ürününün barkodunu tara; besin değerleri Open Food Facts veritabanından anında gelsin. Etiket okumak, gram çevirmek yok.",
+    stat: "Anında",
+    statLabel: "global ürün veritabanı",
   },
   {
-    title: "Günlük Besin Takibi",
-    body: "Kalori, protein, karbonhidrat, yağ, lif, şeker ve sodyum tek bakışta.",
-    tag: "Tek ekranda",
-    visual: "macros",
-    stat: "7 değer",
-    statLabel: "her öğünde",
-    color: "var(--color-coral)",
-    w: 2, h: 1,
-    at: { c: 2, r: 1 }, atSm: { c: 0, r: 2 },
-    from: { top: -34, left: 50, rx: -360, ry: -360, rz: -180 },
-    to: { rx: 2, ry: -2, rz: 0 },
-  },
-  {
-    title: "Su Takibi",
-    body: "Bardak bardak ekle, widget'tan izle.",
-    tag: "Günlük hedef",
-    visual: "water",
-    stat: "2.4 L",
-    statLabel: "önerilen günlük",
-    color: "var(--color-sky)",
-    w: 1, h: 1,
-    at: { c: 4, r: 0 }, atSm: { c: 2, r: 2 },
-    from: { top: -52, left: 62, rx: 360, ry: 360, rz: -135 },
-    to: { rx: -2, ry: 2, rz: 0 },
-  },
-  {
-    title: "Kilo Takibi",
-    body: "Eğrini izle, hedefe kalan mesafeyi gör.",
-    tag: "Haftalık projeksiyon",
-    visual: "chart",
+    id: "goals",
+    layout: "left",
+    screen: "/screens/goals.webp",
+    alt: "NutriPix hedefler ekranı",
+    tag: "Hedefler",
+    title: "Hedef senin vücuduna göre",
+    body: "Boy, kilo, yaş ve aktivite seviyenden günlük kalori ve makro hedeflerin hesaplanır. Kilo ver, koru ya da kas yap — plan buna göre değişir.",
     stat: "3 ay",
-    statLabel: "ileri projeksiyon",
-    color: "var(--color-teal)",
-    w: 1, h: 1, spin: -180,
-    at: { c: 4, r: 1 }, atSm: { c: 0, r: 3 },
-    from: { top: -36, left: 68, rx: -180, ry: -360, rz: -180 },
-    to: { rx: 3, ry: -2, rz: 0 },
+    statLabel: "ileriye dönük projeksiyon",
   },
   {
-    title: "Günlük Seri",
-    body: "Kaydettiğin her gün seriyi büyütür.",
-    tag: "Alışkanlık",
-    visual: "streak",
-    stat: "12 gün",
-    statLabel: "en uzun seri",
-    color: "var(--color-gold)",
-    w: 1, h: 1,
-    at: { c: 1, r: 2 }, atSm: { c: 1, r: 3 },
-    from: { top: -44, left: 44, rx: 360, ry: -180, rz: 60 },
-    to: { rx: -2, ry: 3, rz: 0 },
-  },
-  {
-    title: "Akıllı Hatırlatma",
-    body: "Sabah, öğle, akşam için ayrı saatler.",
-    tag: "Unutturmaz",
-    visual: "bell",
-    stat: "3 öğün",
-    statLabel: "ayrı saat",
-    color: "var(--color-amber)",
-    w: 1, h: 1,
-    at: { c: 2, r: 2 }, atSm: { c: 2, r: 3 },
-    from: { top: -58, left: 58, rx: -360, ry: 180, rz: -90 },
-    to: { rx: 2, ry: -3, rz: 0 },
-  },
-  {
-    title: "Türkçe & English",
-    body: "Arayüz ve AI çıktıları iki dilde.",
-    tag: "İki dil",
-    visual: "lang",
-    stat: "TR / EN",
-    statLabel: "anında geçiş",
-    color: "var(--color-pink)",
-    w: 1, h: 1,
-    at: { c: 3, r: 2 }, atSm: { c: 1, r: 4 },
-    from: { top: -30, left: 36, rx: 180, ry: 360, rz: 135 },
-    to: { rx: -3, ry: 2, rz: 0 },
+    id: "more",
+    layout: "note",
+    tag: "Ve dahası",
+    title: "Günün geri kalanı da burada",
+    body: "Takip tek bir öğünle bitmiyor: su, kilo, seri ve hatırlatmalar aynı ekranın içinde duruyor.",
+    chips: [
+      "Su takibi",
+      "Kilo takibi",
+      "Günlük seri",
+      "Akıllı hatırlatma",
+      "Türkçe & English",
+      "Açık / koyu tema",
+    ],
   },
 ];
 
-/** Blokların arasında süzülen 3B yiyecekler (blender/props.py üretir).
-    Hedef konumlar da hücre birimiyle veriliyor: `cell: true` olanlar gridin
-    boş kalan hücresine oturur, diğerleri gridin dışındaki kenar şeridine.
-    Kenarda yeterli yer yoksa (dar ekran) o yiyecek otomatik gizlenir. */
-export type FeatureProp = {
-  src: string;
-  size: number;
-  rot: number;
-  /** gridin boş hücresine mi oturuyor (dışarıdaki kenar şeridi yerine) */
-  cell?: boolean;
-  from: { top: number; left: number; rot: number };
-  at: { c: number; r: number };
-  atSm: { c: number; r: number };
+/* ────────────────────────────────────────────────────────────
+   Platformlar — iki model yan yana; birinin üzerine gelince
+   aşağıdaki özellikler o platformunkiyle değişir.
+   ──────────────────────────────────────────────────────────── */
+
+export type PlatformKey = "ios" | "android";
+
+export const platforms: Record<
+  PlatformKey,
+  {
+    label: string;
+    device: string;
+    screen: string;
+    alt: string;
+    note: string;
+    features: { t: string; d: string }[];
+  }
+> = {
+  ios: {
+    label: "iOS",
+    device: "iPhone",
+    screen: "/screens/history.webp",
+    alt: "NutriPix iPhone geçmiş ekranı",
+    note: "App Store",
+    features: [
+      { t: "Ana ekran widget'ı", d: "Su takibini uygulamayı açmadan, doğrudan iPhone ana ekranından yap." },
+      { t: "Yerel bildirimler", d: "Öğün saatlerinde hatırlatma; saatleri sen belirle, dilediğinde kapat." },
+      { t: "App Store aboneliği", d: "Premium, Apple hesabından yönetilir; iptal tek dokunuş." },
+    ],
+  },
+  android: {
+    label: "Android",
+    device: "Android",
+    screen: "/screens/goals.webp",
+    alt: "NutriPix Android hedefler ekranı",
+    note: "Google Play",
+    features: [
+      { t: "Ana ekran widget'ı", d: "Günlük halkayı ve su sayacını doğrudan ana ekrana koy." },
+      { t: "Yerel bildirimler", d: "Aynı hatırlatmalar, Android bildirim ayarlarınla uyumlu çalışır." },
+      { t: "Google Play aboneliği", d: "Premium, Play hesabından yönetilir; iptal tek dokunuş." },
+    ],
+  },
 };
-
-export const featureProps: FeatureProp[] = [
-  { src: "/props/elma.webp", size: 118, rot: -10,
-    from: { top: -30, left: 20, rot: -40 }, at: { c: -0.85, r: 0.1 }, atSm: { c: -0.85, r: 0.3 } },
-  { src: "/props/uzum.webp", size: 112, rot: -8,
-    from: { top: -46, left: 26, rot: 30 }, at: { c: -0.85, r: 1.45 }, atSm: { c: -0.85, r: 2.2 } },
-  { src: "/props/havuc.webp", size: 108, rot: 22, cell: true,
-    from: { top: -25, left: 40, rot: 70 }, at: { c: 0, r: 2 }, atSm: { c: 0, r: 4 } },
-  { src: "/props/domates.webp", size: 102, rot: -12, cell: true,
-    from: { top: -35, left: 65, rot: -60 }, at: { c: 4, r: 2 }, atSm: { c: 2, r: 4 } },
-  { src: "/props/yesil-elma.webp", size: 96, rot: 16,
-    from: { top: -28, left: 72, rot: -35 }, at: { c: 5, r: 0.1 }, atSm: { c: 3, r: 0.3 } },
-  { src: "/props/brokoli.webp", size: 126, rot: 14,
-    from: { top: -20, left: 80, rot: 50 }, at: { c: 5, r: 2.15 }, atSm: { c: 3, r: 3.4 } },
-  { src: "/props/su.webp", size: 90, rot: 8,
-    from: { top: -40, left: 55, rot: -20 }, at: { c: -0.85, r: 2.8 }, atSm: { c: -0.85, r: 4.1 } },
-  { src: "/props/yumurta.webp", size: 84, rot: -6,
-    from: { top: -50, left: 48, rot: 20 }, at: { c: 5, r: 1.3 }, atSm: { c: 3, r: 1.8 } },
-];
