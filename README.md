@@ -47,6 +47,24 @@ Pinli bir bölüm eklenirse ona `refreshPriority: 1`, layout'a bağlı diğer
 tetikleyicilere `-1` verilmeli; yoksa ScrollTrigger konumları pin boşluğunu
 saymadan hesaplar.
 
+### Kırılım noktaları
+
+Masaüstü (**≥1024px**) düzeni dokunulmaz kabul edilir; mobil/tablet düzeltmeleri
+her zaman `max-width: 1023px` (ya da altındaki) sorgulara yazılır:
+
+- **≤600px — telefon:** hero tek ekrana sığar (cihaz + yazı + butonlar),
+  yüzen kartlar `scale(0.82)` ile küçülür, tur bölümünün metin kutusu 266px
+  tabanlıdır (kısa telefonlarda taşmasın diye sahne 30svh'ye iner).
+- **601–1023px — tablet:** hero ayrı bir blokla kurulur (cihaz `min(42vw,320px)`,
+  üç kart açık, yazı blokları aşağıya yayılır); şerit ve platform telefonları
+  büyür, footer iki sütuna geçer.
+- **≥1024px — masaüstü:** mevcut düzen; hiçbir mobil kural buraya sızmaz.
+- **Yatay telefon (`orientation: landscape` + `max-height`):** hero kısalır,
+  tur bölümü masaüstü gibi yan yana kurulur — dikey yerleşim 390px yüksekliğe
+  sığmıyor.
+- **`hover: none`:** platform modelleri dokunmatikte tamamen sönmez; dokununca
+  seçilir.
+
 Açılış animasyonunu atlamak için: `http://localhost:3000/?boot=0`
 (`?bootAt=0.33` ise animasyonu o karede dondurur).
 

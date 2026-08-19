@@ -25,8 +25,8 @@
   --color-line-2: color-mix(in oklab, var(--fg) 26%, var(--bg));
 
   --color-fg: var(--fg);
-  --color-fg-2: color-mix(in oklab, var(--fg) 76%, var(--bg));
-  --color-fg-3: color-mix(in oklab, var(--fg) 55%, var(--bg));
+  --color-fg-2: color-mix(in oklab, var(--fg) 82%, var(--bg));
+  --color-fg-3: color-mix(in oklab, var(--fg) 62%, var(--bg));
 
   --color-accent: var(--accent);
   --color-accent-2: var(--accent-2);
@@ -513,11 +513,13 @@
 @media (max-width: 900px) {
   :root {
     --hero-device-width: min(64vw, 270px);
-    --hero-device-center-y: clamp(305px, 43svh, 370px);
+    --hero-device-center-y: clamp(300px, 40svh, 350px);
   }
 
+  /* Telefonda hero tek ekrana yakın dursun: cihaz biraz yukarı, yazı ve
+     butonlar hemen altında. */
   .hero-shell {
-    min-height: 1100px;
+    min-height: 980px;
   }
 
   .hero-copy-block,
@@ -531,11 +533,11 @@
   }
 
   .hero-copy-block {
-    top: clamp(650px, 81svh, 735px);
+    top: clamp(600px, 74svh, 665px);
   }
 
   .hero-action-block {
-    top: clamp(780px, 94svh, 850px);
+    top: clamp(700px, 86svh, 780px);
   }
 
   .hero-action-block .hero-actions-in,
@@ -585,17 +587,81 @@
   }
 }
 
-@media (max-width: 520px) {
+/* ── Tablet dikey (601–1023) ──
+   Telefon ekranları için yazılmış ≤900 bloğu tablette çok küçük kalıyordu:
+   cihaz büyür, kartlar dışarı açılır, yazı blokları aşağıya yayılır.
+   1024 ve üzeri (masaüstü) bu bloktan etkilenmez. */
+@media (min-width: 601px) and (max-width: 1023px) {
+  :root {
+    --hero-device-width: min(42vw, 320px);
+    --hero-device-center-y: clamp(340px, 40svh, 430px);
+  }
+
   .hero-shell {
-    min-height: 1070px;
+    min-height: 1220px;
   }
 
   .hero-copy-block {
-    top: clamp(625px, 79svh, 705px);
+    top: clamp(760px, 80svh, 860px);
+    width: min(calc(100% - 96px), 620px);
   }
 
   .hero-action-block {
-    top: clamp(770px, 94svh, 830px);
+    top: clamp(900px, 93svh, 1010px);
+    width: min(calc(100% - 96px), 620px);
+  }
+
+  .hero-brand-slot {
+    transform: scaleY(1.24);
+  }
+
+  .hero-card-meal {
+    left: -30%;
+    top: 12%;
+    width: 178px;
+  }
+
+  .hero-card-macros {
+    right: -30%;
+    top: 44%;
+    width: 170px;
+  }
+
+  .hero-card-streak {
+    display: block;
+    bottom: 2%;
+    left: -32%;
+    width: 148px;
+  }
+
+  .hero-card-surface {
+    padding: 13px;
+  }
+}
+
+@media (max-width: 520px) {
+  .hero-shell {
+    min-height: 960px;
+  }
+
+  .hero-copy-block {
+    top: clamp(585px, 73svh, 650px);
+  }
+
+  .hero-action-block {
+    top: clamp(690px, 85svh, 762px);
+  }
+
+  /* Kartlar küçük ekranda telefonu boğuyordu: tümü orantılı küçülür, dış
+     kenarlarından ölçeklendiği için taşmazlar. */
+  .hero-card-meal .hero-card-surface {
+    transform: translateZ(78px) rotateY(11deg) rotateZ(-2.5deg) scale(0.82);
+    transform-origin: left top;
+  }
+
+  .hero-card-macros .hero-card-surface {
+    transform: translateZ(92px) rotateY(-12deg) rotateZ(2deg) scale(0.82);
+    transform-origin: right top;
   }
 
   .hero-store-badges {
@@ -620,6 +686,55 @@
 
   .hero-store-badges > a > span:nth-child(2) > span:last-child {
     font-size: 13px;
+  }
+}
+
+/* Yatay tutulan telefon/küçük tablet: dikey yerleşim sığmıyor, tur bölümü
+   masaüstündeki gibi yan yana kurulur (sahne sağda, metin solda). */
+@media (orientation: landscape) and (max-height: 620px) and (max-width: 1023px) {
+  .journey-layout {
+    flex-direction: row;
+    gap: 20px;
+  }
+
+  .journey-copy {
+    order: 1;
+    min-width: 0;
+    flex: 1 1 0;
+  }
+
+  .journey-stage {
+    order: 2;
+    height: 86svh;
+  }
+
+  .journey-steps {
+    height: 62svh;
+    min-height: 0;
+  }
+}
+
+/* Yatay tutulan telefon: yükseklik çok az, hero'yu kısalt. */
+@media (orientation: landscape) and (max-height: 520px) {
+  :root {
+    --hero-device-width: min(30vw, 250px);
+    --hero-device-center-y: 44%;
+  }
+
+  .hero-shell {
+    min-height: 760px;
+  }
+
+  .hero-copy-block {
+    top: 560px;
+  }
+
+  .hero-action-block {
+    top: 650px;
+  }
+
+  .hero-card-streak {
+    display: none;
   }
 }
 
@@ -692,6 +807,18 @@
   flex: 0 0 auto;
 }
 
+@media (max-width: 1023px) {
+  /* clamp'in alt sınırı tablette fazla küçük kalıyordu */
+  .spot-phone {
+    width: clamp(200px, 32vw, 300px);
+  }
+
+  /* iki model tablette ekranı daha iyi doldursun */
+  #platformlar button {
+    width: clamp(150px, 38vw, 290px);
+  }
+}
+
 @media (max-width: 900px) {
   .spot-row {
     flex-direction: column;
@@ -731,5 +858,14 @@
 @media (prefers-reduced-motion: reduce) {
   .platform-features > * {
     animation: none !important;
+  }
+}
+
+/* Dokunmatik cihazda "hover" yok: seçili olmayan model tamamen sönük
+   görünmesin, dokununca değişsin. */
+@media (hover: none) {
+  #platformlar button[aria-pressed="false"] {
+    opacity: 0.75 !important;
+    filter: none !important;
   }
 }

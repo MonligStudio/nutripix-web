@@ -24,7 +24,7 @@ export default function Pricing() {
               data-reveal
               data-reveal-delay={`${i * 110}`}
               className={[
-                "relative flex flex-col overflow-hidden rounded-[26px] p-7 lg:p-8",
+                "relative mx-auto flex w-full max-w-[560px] flex-col overflow-hidden rounded-[26px] p-7 lg:max-w-none lg:p-8",
                 p.highlight
                   ? "border border-accent/35 bg-surface accent-glow"
                   : "border border-line bg-surface/60",

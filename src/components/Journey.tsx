@@ -262,9 +262,9 @@ export default function Journey() {
       style={{ height: `${TOTAL * 96}vh` }}
     >
       <div className="sticky top-0 h-[100svh] overflow-hidden">
-        <div className="mx-auto flex h-full max-w-[1280px] flex-col items-center justify-center gap-4 px-5 lg:flex-row lg:items-center lg:gap-16 lg:px-10">
+        <div className="journey-layout mx-auto flex h-full max-w-[1280px] flex-col items-center justify-center gap-4 px-5 lg:flex-row lg:items-center lg:gap-16 lg:px-10">
           {/* ── metin ── */}
-          <div className="order-2 w-full lg:order-1 lg:flex-1">
+          <div className="journey-copy order-2 w-full lg:order-1 lg:flex-1">
             {/* Bölüm başlığı: adımlar değişse de sabit kalır, kullanıcı
                 hangi bölümde olduğunu kaybetmesin. */}
             <div className="mb-5 lg:mb-8">
@@ -277,7 +277,7 @@ export default function Journey() {
               </h2>
             </div>
 
-            <div className="relative h-[32svh] min-h-[250px] lg:h-[350px]">
+            <div className="journey-steps relative h-[36svh] min-h-[266px] lg:h-[350px]">
               {journey.map((s) => (
                 <article
                   key={s.id}
@@ -339,7 +339,7 @@ export default function Journey() {
 
           {/* ── sahne: el + telefon ── */}
           <div
-            className="stage relative order-1 h-[34svh] shrink-0 overflow-hidden sm:h-[42svh] lg:order-2 lg:h-[min(84svh,780px)] lg:overflow-visible"
+            className="stage journey-stage relative order-1 h-[30svh] shrink-0 overflow-hidden min-[420px]:h-[34svh] sm:h-[42svh] lg:order-2 lg:h-[min(84svh,780px)] lg:overflow-visible"
             style={{ aspectRatio: `${STAGE.w} / ${STAGE.h}` }}
           >
             <div

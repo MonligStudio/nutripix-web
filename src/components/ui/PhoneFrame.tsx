@@ -15,6 +15,7 @@ export function PhoneFrame({
   buttons = true,
   camera = "island",
   glow = true,
+  shadow = true,
 }: {
   children?: ReactNode;
   className?: string;
@@ -23,6 +24,8 @@ export function PhoneFrame({
   /** iPhone'da dinamik ada, Android'de tepe ortasında delik kamera. */
   camera?: "island" | "punch" | "none";
   glow?: boolean;
+  /** Dışa düşen gölge; kapanınca sadece kenar kabartmaları kalır. */
+  shadow?: boolean;
 }) {
   return (
     <div
@@ -64,9 +67,10 @@ export function PhoneFrame({
         style={{
           borderRadius: BODY_RADIUS,
           background: "linear-gradient(155deg,#333b46 0%,#222932 26%,#1a2028 62%,#141a21 100%)",
-          boxShadow:
-            "0 1.5px 0 rgba(255,255,255,.16) inset, 0 -1px 0 rgba(0,0,0,.55) inset," +
-            " 0 40px 90px -30px rgba(0,0,0,.85), 0 14px 40px -20px rgba(0,0,0,.7)",
+          boxShadow: shadow
+            ? "0 1.5px 0 rgba(255,255,255,.16) inset, 0 -1px 0 rgba(0,0,0,.55) inset," +
+              " 0 40px 90px -30px rgba(0,0,0,.85), 0 14px 40px -20px rgba(0,0,0,.7)"
+            : "0 1.5px 0 rgba(255,255,255,.16) inset, 0 -1px 0 rgba(0,0,0,.55) inset",
         }}
       >
         {/* ekran */}

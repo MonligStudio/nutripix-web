@@ -71,7 +71,7 @@ export default function Nav() {
       {/* mobil menü */}
       <div
         className={[
-          "overflow-hidden border-t border-line bg-base/95 backdrop-blur-xl transition-all duration-400 lg:hidden",
+          "overflow-hidden border-t border-line bg-base/95 backdrop-blur-xl transition-[max-height] duration-400 lg:hidden",
           open ? "max-h-[420px]" : "max-h-0 border-transparent",
         ].join(" ")}
       >

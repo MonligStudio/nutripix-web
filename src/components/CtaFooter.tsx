@@ -8,17 +8,18 @@ export default function CtaFooter() {
   return (
     <>
       {/* ── kapanış çağrısı ── */}
+      {/* Kapanış çağrısı tam ekran: hemen altında footer başlar. */}
       <section
         data-color="orange"
         data-parallax-scope
-        className="relative overflow-hidden py-28 lg:py-40"
+        className="relative flex min-h-[100svh] items-center overflow-hidden py-24 lg:py-32"
       >
         {/* yanda süzülen telefon — dar ekranda düşer */}
         <div
           data-parallax="0.3"
           className="pointer-events-none absolute right-[4%] top-1/2 hidden w-[210px] -translate-y-1/2 rotate-[-7deg] opacity-95 xl:block"
         >
-          <PhoneFrame buttons={false} glow={false}>
+          <PhoneFrame buttons={false} glow={false} shadow={false}>
             <img
               src={withBasePath("/screens/fab.webp")}
               alt=""
@@ -30,7 +31,7 @@ export default function CtaFooter() {
           </PhoneFrame>
         </div>
 
-        <div className="relative mx-auto max-w-[1280px] px-5 text-center lg:px-10">
+        <div className="relative mx-auto w-full max-w-[1280px] px-5 text-center lg:px-10">
           <div data-reveal className="flex items-center justify-center gap-3">
             <span className="h-px w-10 bg-accent" />
             <span className="eyebrow !text-accent">7 gün ücretsiz</span>
@@ -61,9 +62,9 @@ export default function CtaFooter() {
       </section>
 
       {/* ── footer ── */}
-      <footer data-color="ink" className="bg-base">
+      <footer data-color="orange" className="bg-base">
         <div className="mx-auto max-w-[1280px] px-5 py-16 lg:px-10">
-          <div className="grid gap-12 lg:grid-cols-[1.3fr_repeat(3,0.9fr)]">
+          <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-[1.3fr_repeat(3,0.9fr)]">
             <div>
               <div className="flex items-center gap-2.5">
                 <LogoMark className="h-8 w-8 text-leaf" />
@@ -111,7 +112,7 @@ function FooterCol({
           <li key={l.label}>
             <a
               href={withBasePath(l.href)}
-              className="text-[13.5px] text-fg-3 transition-colors hover:text-fg"
+              className="text-[13.5px] text-fg-2 transition-colors hover:text-fg"
             >
               {l.label}
             </a>
