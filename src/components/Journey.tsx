@@ -5,7 +5,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { journey } from "@/lib/content";
 import { themes } from "@/lib/palette";
-import { PHONE, PHONE_STYLE, SCREEN, STAGE } from "@/lib/stage";
+import { HAND_FRAME, PHONE, PHONE_STYLE, SCREEN, STAGE } from "@/lib/stage";
 import { withBasePath } from "@/lib/paths";
 import { HandLayer, thumbFrames } from "./Hand";
 
@@ -71,15 +71,37 @@ export default function Journey() {
       const ripple = q<HTMLElement>(".tap-ripple");
       const sprite = q<HTMLElement>(".thumb-sprite")[0];
 
-      /* Baş parmak poz dizisi: kesirli değer en yakın kareye yuvarlanır. */
-      const { cols, rows, frames: FRAME_N, frameForTarget } = thumbFrames;
+      /* Baş parmak poz dizisi. Kare indeksi baştan sona artan TEK bir sayı:
+         her hedef için "havada git → cama in → bastır" üç anahtar kareyle
+         gömülü (blender/thumb_frames.py). Kesirli değer en yakın kareye
+         yuvarlanır, elin kavrama kayması ise ara değerlenir — ikisi de aynı
+         sayıdan sürüldüğü için parmak elden hiç ayrı düşmüyor. */
+      const { cols, rows, frames: FRAME_N, frameForTarget, pressForTarget, handShift, tips } =
+        thumbFrames;
+      const clampFrame = (f: number) => Math.max(0, Math.min(FRAME_N - 1, f));
       const showFrame = (f: number) => {
-        if (!sprite) return;
-        const i = Math.max(0, Math.min(FRAME_N - 1, Math.round(f)));
-        const col = i % cols;
-        const row = Math.floor(i / cols);
-        sprite.style.backgroundPosition =
-          `${cols > 1 ? (col / (cols - 1)) * 100 : 0}% ${rows > 1 ? (row / (rows - 1)) * 100 : 0}%`;
+        const v = clampFrame(f);
+        if (sprite) {
+          const i = Math.round(v);
+          const col = i % cols;
+          const row = Math.floor(i / cols);
+          sprite.style.backgroundPosition =
+            `${cols > 1 ? (col / (cols - 1)) * 100 : 0}% ${rows > 1 ? (row / (rows - 1)) * 100 : 0}%`;
+        }
+        // Uzak hedeflerde parmak tek başına yetişmiyor; açığı el kapatıyor.
+        const lo = Math.floor(v);
+        const hi = Math.min(FRAME_N - 1, lo + 1);
+        const u = v - lo;
+        const dx = handShift[lo][0] + (handShift[hi][0] - handShift[lo][0]) * u;
+        const dy = handShift[lo][1] + (handShift[hi][1] - handShift[lo][1]) * u;
+        gsap.set(hand, { xPercent: (dx / STAGE.w) * 100, yPercent: (dy / HAND_FRAME.h) * 100 });
+      };
+
+      /* Halkanın yeri: hedefin kendisi değil, parmağın O KAREDE gerçekten
+         indiği nokta. İkisini ayrı beslersek dokunuş sahte duruyor. */
+      const tapAt = (f: number) => {
+        const t = tips[clampFrame(Math.round(f))];
+        return { x: (t[0] - SCREEN.x) / SCREEN.w, y: (t[1] - SCREEN.y) / SCREEN.h };
       };
 
       /* başlangıç durumu */
@@ -122,51 +144,28 @@ export default function Journey() {
         const step = journey[i];
         const t0 = INTRO + (i - 1);
         const tr = transition(step.enter);
-        const tapPct = step.tap ?? { x: 0.5, y: 0.5 };
 
-        /* 1 — baş parmak hedefe uzanır. Gerçek bir dokunuşun ritmi: hızlı
-           uzanma, temasta kısa bastırma, sonra gevşeme. Parmak geri
-           çekilmiyor, bir sonraki hedefe oradan devam ediyor. */
-        const target = frameForTarget[i - 1] ?? 0;
+        /* 1 — dokunuşun ritmi: parmak camdan kalkıp hedefe gider (uzun),
+           cama iner, bir kare bastırır (çok kısa), sonra bırakır. Kareler
+           zaten bu üç duruşu taşıdığı için burada sadece zamanlama var. */
+        const touch = frameForTarget[i - 1] ?? 0;
+        const press = pressForTarget[i - 1] ?? touch;
+        // Halka TEMAS karesinden konumlanır: bastırma karesi ucu birkaç birim
+        // daha ileri itiyor, o bir basınç ayrıntısı — dokunulan nokta değil.
+        const tapPct = tapAt(touch);
         const paint = () => showFrame(frame.v);
-        // önce hafif geri çekilme: gerçek elde parmak hedefler arasında camdan
-        // kalkıp gider, camın üstünde kaymaz. Düşük kare = daha toplanmış poz.
-        // (frame.v çalışma anındaki değer değil, zaman çizelgesi KURULURKEN 0;
-        //  o yüzden geri çekilmeyi bir önceki hedeften hesaplıyoruz)
-        const prev = i >= 2 ? frameForTarget[i - 2] ?? 0 : 0;
-        tl.to(
-          frame,
-          { v: Math.max(0, prev - 2), duration: 0.1, ease: "power2.out", onUpdate: paint },
-          t0,
-        );
-        tl.to(frame, { v: target, duration: 0.26, ease: "power3.inOut", onUpdate: paint }, t0 + 0.1);
-        // bastırma: bir kare ileri (parmak cama yaslanır)
-        tl.to(
-          frame,
-          { v: Math.min(FRAME_N - 1, target + 1), duration: 0.06, ease: "power2.out", onUpdate: paint },
-          t0 + 0.38,
-        );
-        tl.to(frame, { v: target, duration: 0.16, ease: "power2.inOut", onUpdate: paint }, t0 + 0.46);
 
-        /* el kavrayışı da hedefe doğru azıcık kayar */
-        tl.to(
-          hand,
-          {
-            xPercent: (tapPct.x - 0.5) * 0.8,
-            yPercent: (tapPct.y - 0.5) * 0.6,
-            duration: 0.42,
-            ease: "power2.inOut",
-          },
-          t0,
-        );
+        tl.to(frame, { v: touch, duration: 0.4, ease: "power2.inOut", onUpdate: paint }, t0);
+        tl.to(frame, { v: press, duration: 0.05, ease: "power2.in", onUpdate: paint }, t0 + 0.4);
+        tl.to(frame, { v: touch, duration: 0.14, ease: "power2.out", onUpdate: paint }, t0 + 0.47);
 
-        /* 2 — dokunuş */
-        tl.set(ripple, { left: `${tapPct.x * 100}%`, top: `${tapPct.y * 100}%` }, t0 + 0.36);
+        /* 2 — temas halkası, parmağın indiği noktada */
+        tl.set(ripple, { left: `${tapPct.x * 100}%`, top: `${tapPct.y * 100}%` }, t0 + 0.4);
         tl.fromTo(
           ripple,
-          { scale: 0.12, opacity: 0.85 },
-          { scale: 1, opacity: 0, duration: 0.34, ease: "power2.out" },
-          t0 + 0.42,
+          { scale: 0.12, opacity: 0.9 },
+          { scale: 1, opacity: 0, duration: 0.32, ease: "power2.out" },
+          t0 + 0.45,
         );
 
         /* 2b — fizik: telefon parmağın bastığı yöne doğru çöker, sonra yaylanır.
@@ -179,10 +178,10 @@ export default function Journey() {
             rotationY: dipX,
             rotationX: dipY,
             scale: 0.994,
-            duration: 0.1,
+            duration: 0.07,
             ease: "power2.out",
           },
-          t0 + 0.4,
+          t0 + 0.42,
         );
         tl.to(
           tilt,
@@ -201,9 +200,9 @@ export default function Journey() {
           screens[i],
           tr.from,
           { ...tr.to, duration: 0.38, ease: "power3.out" },
-          t0 + 0.46,
+          t0 + 0.47,
         );
-        tl.to(screens[i - 1], { ...tr.out, duration: 0.34, ease: "power2.in" }, t0 + 0.46);
+        tl.to(screens[i - 1], { ...tr.out, duration: 0.34, ease: "power2.in" }, t0 + 0.47);
 
         /* 4 — metin çapraz geçişle değişir */
         tl.to(copies[i - 1], { opacity: 0, y: -26, duration: 0.26 }, t0 + 0.22);

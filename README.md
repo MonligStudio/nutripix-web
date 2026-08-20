@@ -68,6 +68,26 @@ her zaman `max-width: 1023px` (ya da altındaki) sorgulara yazılır:
 Açılış animasyonunu atlamak için: `http://localhost:3000/?boot=0`
 (`?bootAt=0.33` ise animasyonu o karede dondurur).
 
+## El + telefon sahnesi (Blender)
+
+"Nasıl kullanılır" bölümündeki el, `blender/hand_rigged.blend` içindeki rigli
+modelden üretiliyor. `blender/hand_rig.py` eli `src/lib/stage.ts` ile ortak olan
+620×1000 sanal sahneye yerleştirir, telefonu holdout olarak keser (avuç arkada
+silinir, kenardan sarkan parmak uçları ve camın üstündeki baş parmak kalır) ve
+baş parmağı her adımın dokunma noktasına götürüp 40 kare render eder. Kareler
+`blender/pack_thumb.py` ile tek bir sprite sheet'e paketlenir.
+
+```bash
+RAW_DIR=/tmp/nutripix_thumb /Applications/Blender.app/Contents/MacOS/Blender \
+  -b blender/hand_rigged.blend --python blender/hand_rig.py -- 96 40
+python3 blender/pack_thumb.py /tmp/nutripix_thumb 0.7
+```
+
+Yerleşimi denerken kodu düzenlemeye gerek yok: `HAND_SPIN`, `HAND_PITCH`,
+`HAND_AX/AY/AZ`, `HAND_CURL`, `TH_LIFT` ortam değişkenleriyle geçilir ve
+son argüman `debug` verilirse telefon yarı saydam bir dikdörtgen olarak
+gösterilip tek kare basılır (`0 40 debug` hiç render etmeden ölçüleri yazar).
+
 ## Yerelde çalıştırma
 
 ```bash
