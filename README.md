@@ -74,19 +74,29 @@ Açılış animasyonunu atlamak için: `http://localhost:3000/?boot=0`
 modelden üretiliyor. `blender/hand_rig.py` eli `src/lib/stage.ts` ile ortak olan
 620×1000 sanal sahneye yerleştirir, telefonu holdout olarak keser (avuç arkada
 silinir, kenardan sarkan parmak uçları ve camın üstündeki baş parmak kalır) ve
-baş parmağı her adımın dokunma noktasına götürüp 40 kare render eder. Kareler
-`blender/pack_thumb.py` ile tek bir sprite sheet'e paketlenir.
+baş parmağı her adımın dokunma noktasına götürüp 48 kare render eder — her
+hedef için avuç (tam kadraj, holdout açık) bir kez, baş parmak (hareket
+kutusuna kırpılmış, holdout kapalı) kare kare.
+
+`blender/pack_thumb.py` bunları TEK bir sprite sheet'e paketlemeden önce
+Pillow'da piksel piksel BİRLEŞTİRİR: her kare artık avuç+parmaklar+baş parmağı
+tek görselde taşıyan, kendi içinde tutarlı bir "tam kare". Eskiden avuç ayrı
+bir <img>, baş parmak ayrı bir kırpılmış sprite katmanı olarak sitede CSS'le
+üst üste hizalanıyordu; bu hem devasa bir sprite sheet'in %800/%700
+background-size ile ölçeklenmesini gerektirip bazı cihazlarda bloklu render
+artefaktına yol açtı, hem de iki katman senkron kaymayınca baş parmak bilekten
+kopmuş gibi duruyordu. Tek-kare yaklaşımı ikisini de kökten çözer.
 
 ```bash
 RAW_DIR=/tmp/nutripix_thumb /Applications/Blender.app/Contents/MacOS/Blender \
-  -b blender/hand_rigged.blend --python blender/hand_rig.py -- 96 40
-python3 blender/pack_thumb.py /tmp/nutripix_thumb 0.7
+  -b blender/hand_rigged.blend --python blender/hand_rig.py -- 96 48
+python3 blender/pack_thumb.py /tmp/nutripix_thumb 0.45
 ```
 
 Yerleşimi denerken kodu düzenlemeye gerek yok: `HAND_SPIN`, `HAND_PITCH`,
 `HAND_AX/AY/AZ`, `HAND_CURL`, `TH_LIFT` ortam değişkenleriyle geçilir ve
 son argüman `debug` verilirse telefon yarı saydam bir dikdörtgen olarak
-gösterilip tek kare basılır (`0 40 debug` hiç render etmeden ölçüleri yazar).
+gösterilip tek kare basılır (`0 48 debug` hiç render etmeden ölçüleri yazar).
 
 ## Yerelde çalıştırma
 

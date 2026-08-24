@@ -53,6 +53,34 @@ def build(font, name, unicode_value, source_contours, advance):
     pen.closePath()
     charstring = pen.getCharString(private=top.Private, globalSubrs=top.GlobalSubrs)
 
+    # T2CharStringPen hint (hstem/vstem) üretmez — fontun geri kalan HER
+    # glifi üretiyor. Windows/DirectWrite gibi bazı render yollarında hint'i
+    # olmayan tek bir glif, komşularından farklı grid-fitting alıp gözle
+    # görülür fazladan boşluğa yol açabiliyor (bu makinede "İ"den sonra
+    # oluşan boşluğun sebebi büyük olasılıkla budur). Kaba ama geçerli bir
+    # hint zonu — glifin kendi sınır kutusu — ekleyerek yapısal tutarlılığı
+    # sağlıyoruz; kesin optik hinting değil ama hint'in TAMAMEN yokluğundan
+    # kesinlikle daha iyi.
+    prog = charstring.program
+    has_width = (
+        len(prog) > 2
+        and isinstance(prog[0], (int, float))
+        and isinstance(prog[1], (int, float))
+        and prog[2] == "hmoveto"
+    )
+    head, rest = (prog[:1], prog[1:]) if has_width else ([], prog)
+    boxes = [
+        (bx0 + dx, by0, bx1 + dx, by1)
+        for (contour, dx) in source_contours
+        for bx0, by0, bx1, by1 in [bounds(contour)]
+    ]
+    x0 = min(b[0] for b in boxes)
+    y0 = min(b[1] for b in boxes)
+    x1 = max(b[2] for b in boxes)
+    y1 = max(b[3] for b in boxes)
+    hint = [round(y0), round(y1 - y0), "hstem", round(x0), round(x1 - x0), "vstem"]
+    charstring.program = head + hint + rest
+
     strings = top.CharStrings
     if strings.charStringsAreIndexed:
         strings.charStrings[name] = len(strings.charStringsIndex)
