@@ -65,6 +65,7 @@ export default function Journey() {
       const fills = q<HTMLElement>("[data-rail-fill]");
       const dots = q<HTMLElement>("[data-rail-dot]");
       const tilt = q(".stage-tilt");
+      const handPress = q(".hand-press");
 
       /* başlangıç durumu */
       gsap.set(screens, { opacity: 0, xPercent: 0, yPercent: 0, scale: 1 });
@@ -73,6 +74,7 @@ export default function Journey() {
       gsap.set(copies, { opacity: 0, y: 34 });
       gsap.set(copies[0], { opacity: 1, y: 0 });
       gsap.set(fills, { scaleX: 0, transformOrigin: "left center" });
+      gsap.set(handPress, { opacity: 0 });
 
       if (reduced) {
         gsap.set(fills, { scaleX: 1 });
@@ -104,7 +106,12 @@ export default function Journey() {
         const t0 = INTRO + (i - 1);
         const tr = transition(step.enter);
 
-        /* 1 — ekran değişir */
+        /* 1 — baş parmak hafifçe basar, ekran değişince bırakır (ufak, tek
+           kemikli hareket — bkz. Hand.tsx .hand-rest/.hand-press) */
+        tl.to(handPress, { opacity: 1, duration: 0.14, ease: "power2.out" }, t0 + 0.3);
+        tl.to(handPress, { opacity: 0, duration: 0.26, ease: "power2.in" }, t0 + 0.5);
+
+        /* 2 — ekran değişir */
         tl.fromTo(
           screens[i],
           tr.from,
@@ -113,7 +120,7 @@ export default function Journey() {
         );
         tl.to(screens[i - 1], { ...tr.out, duration: 0.34, ease: "power2.in" }, t0 + 0.47);
 
-        /* 2 — metin çapraz geçişle değişir */
+        /* 3 — metin çapraz geçişle değişir */
         tl.to(copies[i - 1], { opacity: 0, y: -26, duration: 0.26 }, t0 + 0.22);
         tl.fromTo(
           copies[i],
@@ -122,7 +129,7 @@ export default function Journey() {
           t0 + 0.42,
         );
 
-        /* 3 — sahne hafifçe eğilir (baş parmak animasyonu sonraki adımda) */
+        /* 4 — sahne hafifçe eğilir */
         tl.to(
           tilt,
           {
@@ -133,7 +140,7 @@ export default function Journey() {
           t0,
         );
 
-        /* 4 — ilerleme rayı */
+        /* 5 — ilerleme rayı */
         tl.to(fills[i], { scaleX: 1, duration: 0.72 }, t0 + 0.18);
         tl.to(dots[i], { backgroundColor: RAIL_ON, duration: 0.2 }, t0 + 0.5);
         tl.to(dots[i - 1], { backgroundColor: RAIL_OFF, duration: 0.2 }, t0 + 0.5);
