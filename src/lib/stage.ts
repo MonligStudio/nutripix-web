@@ -22,7 +22,7 @@ export const HAND_FRAME = { w: 620, h: 1220 };
  * Ekran dikdörtgeni bu fotoğrafta kalan boşluğun piksel ölçümüyle bulundu
  * (measure_screen.py), HAND_FRAME (620×1220) koordinat sisteminde.
  */
-export const SCREEN = { x: 39, y: 41, w: 356, h: 689 };
+export const SCREEN = { x: 53, y: 47, w: 336, h: 677 };
 
 const box = (r: { x: number; y: number; w: number; h: number }, frame: { w: number; h: number }) => ({
   left: `${(r.x / frame.w) * 100}%`,
