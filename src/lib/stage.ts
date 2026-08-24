@@ -17,21 +17,18 @@ export const STAGE = { w: 620, h: 1000 };
 export const HAND_FRAME = { w: 620, h: 1220 };
 
 /**
- * Telefon gövdesi. Blender'da bu dikdörtgen "holdout" olarak kullanılır:
- * modelin kendi telefonu alfadan silinir, yerini buradaki DOM telefon alır.
- * Telefonun önünde kalan parmaklar render'da durur ve DOM'un üstüne biner.
+ * Telefon dahil el+telefon TEK bir statik fotoğraf (blender/hand_phone_whole_site.blend,
+ * kaynak Meshy_AI_Hand_Holding_Smartpho...blend — hiç bölünmemiş, dikişsiz model).
+ * Ekran dikdörtgeni bu fotoğrafta kalan boşluğun piksel ölçümüyle bulundu
+ * (measure_screen.py), HAND_FRAME (620×1220) koordinat sisteminde.
  */
-export const PHONE = { x: 86, y: 24.8, w: 388, h: 780.4 };
+export const SCREEN = { x: 39, y: 41, w: 356, h: 689 };
 
-/** Ekran alanı — gövdenin 12 birim içi */
-export const SCREEN = { x: 98, y: 36.8, w: 364, h: 756.4 };
-
-const box = (r: { x: number; y: number; w: number; h: number }) => ({
-  left: `${(r.x / STAGE.w) * 100}%`,
-  top: `${(r.y / STAGE.h) * 100}%`,
-  width: `${(r.w / STAGE.w) * 100}%`,
-  height: `${(r.h / STAGE.h) * 100}%`,
+const box = (r: { x: number; y: number; w: number; h: number }, frame: { w: number; h: number }) => ({
+  left: `${(r.x / frame.w) * 100}%`,
+  top: `${(r.y / frame.h) * 100}%`,
+  width: `${(r.w / frame.w) * 100}%`,
+  height: `${(r.h / frame.h) * 100}%`,
 });
 
-export const PHONE_STYLE = box(PHONE);
-export const SCREEN_STYLE = box(SCREEN);
+export const SCREEN_STYLE = box(SCREEN, HAND_FRAME);

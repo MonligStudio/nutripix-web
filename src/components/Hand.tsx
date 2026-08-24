@@ -1,57 +1,37 @@
+import type { ReactNode } from "react";
 import { HAND_FRAME } from "@/lib/stage";
 import { withBasePath } from "@/lib/paths";
-import sprite from "@/lib/thumbFrames.json";
 
 /**
- * El katmanı — Blender'da temizlenip sahneye hizalanan modelin ortografik
- * render'ı (blender/model.py). Modelin kendi telefonu holdout ile alfadan
- * silindiği için görselde SADECE el var: telefonun arkasında kalan avuç
- * kesilmiş, önündeki parmaklar durmaktadır. Bu yüzden katman DOM telefonun
- * ÜSTÜNE serilir, doğru örtüşme kendiliğinden oluşur.
+ * El + telefon katmanı — artık tek bir statik fotoğraf
+ * (blender/hand_phone_whole_site.blend, kaynak orijinal Meshy modeli, hiç
+ * bölünmemiş/dikişsiz). Önceki ayrı-rigli animasyonlu el sprite'ı (25 kare)
+ * gerçek mesh'te düzeltilemeyen bir başparmak-avuç kopukluğu içeriyordu;
+ * kullanıcı isteğiyle bu tek parça modele geçildi. Baş parmak animasyonu
+ * (dokunuş/kaydırma) bu adımda yok — sonraki adımda ayrıca eklenecek.
  *
- * Üstünde baş parmağın poz dizisi var. Parmak iki eklemden (CMC + IP)
- * gerçek eklem limitleriyle bükülüp 24 kare render edildi; hedefe uzanma
- * iki halkalı IK ile çözüldü (blender/thumb_frames.py). Sprite yalnızca
- * kareler arasında değişen dikdörtgeni içerir, elin kalanı alttaki sabit
- * görselden gelir. 0. kare dinlenme duruşudur, tabanla birebir çakışır.
- *
- * Kadraj sahneden uzun (1220 / 1000) — kol aşağıdan taşsın diye. İkisi de
- * bu sarmalayıcının içinde olduğu için yüzdeler aynı uzaya oturur.
+ * `children`, statik fotoğrafın ekran boşluğunun (SCREEN_STYLE) üstüne
+ * gelen canlı uygulama ekran görüntülerini taşır — aynı HAND_FRAME
+ * koordinat sisteminde konumlanır.
  */
-export function HandLayer() {
-  const { rect, cols, rows } = sprite;
+export function HandLayer({ children }: { children?: ReactNode }) {
   return (
     <div
       aria-hidden="true"
-      className="hand-frame pointer-events-none absolute left-0 top-0 w-full"
+      className="hand-frame absolute left-0 top-0 w-full"
       style={{ aspectRatio: `${HAND_FRAME.w} / ${HAND_FRAME.h}` }}
     >
-      <img
-        src={withBasePath("/hand/model.webp")}
-        alt=""
-        draggable={false}
-        width={HAND_FRAME.w}
-        height={HAND_FRAME.h}
-        className="hand-model absolute inset-0 h-full w-full max-w-none select-none"
-        style={{ filter: "drop-shadow(-16px 22px 30px rgba(0,0,0,.55))" }}
-      />
       <div
-        className="thumb-sprite absolute"
+        className="hand-photo pointer-events-none absolute inset-0 h-full w-full select-none"
         style={{
-          left: `${(rect.x / HAND_FRAME.w) * 100}%`,
-          top: `${(rect.y / HAND_FRAME.h) * 100}%`,
-          width: `${(rect.w / HAND_FRAME.w) * 100}%`,
-          height: `${(rect.h / HAND_FRAME.h) * 100}%`,
-          backgroundImage: `url(${withBasePath("/hand/thumb-sheet.webp")})`,
-          backgroundSize: `${cols * 100}% ${rows * 100}%`,
+          backgroundImage: `url(${withBasePath("/hand/hand-phone-static.webp")})`,
+          backgroundSize: "100% 100%",
           backgroundPosition: "0% 0%",
           backgroundRepeat: "no-repeat",
-          filter: "drop-shadow(-14px 18px 24px rgba(0,0,0,.5))",
+          filter: "drop-shadow(-16px 22px 30px rgba(0,0,0,.55))",
         }}
       />
+      {children}
     </div>
   );
 }
-
-/** Hedef → kare eşlemesi ve ızgara ölçüleri (blender/pack_thumb.py üretir) */
-export const thumbFrames = sprite;

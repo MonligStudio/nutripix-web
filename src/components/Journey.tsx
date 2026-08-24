@@ -5,9 +5,9 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { journey } from "@/lib/content";
 import { themes } from "@/lib/palette";
-import { HAND_FRAME, PHONE, PHONE_STYLE, SCREEN, STAGE } from "@/lib/stage";
+import { SCREEN_STYLE, STAGE } from "@/lib/stage";
 import { withBasePath } from "@/lib/paths";
-import { HandLayer, thumbFrames } from "./Hand";
+import { HandLayer } from "./Hand";
 
 /* Bu bölüm her zaman siyah temada; ray renkleri oradan sabit alınır. */
 const RAIL_ON = themes.ink.accent;
@@ -64,45 +64,7 @@ export default function Journey() {
       const copies = q<HTMLElement>("[data-copy]");
       const fills = q<HTMLElement>("[data-rail-fill]");
       const dots = q<HTMLElement>("[data-rail-dot]");
-      // Kavrayış kayması sarmalayıcıya uygulanır: taban görsel ile baş parmak
-      // sprite'ı birlikte kaysın, yoksa parmak elden ayrı düşer.
-      const hand = q(".hand-frame");
       const tilt = q(".stage-tilt");
-      const ripple = q<HTMLElement>(".tap-ripple");
-      const sprite = q<HTMLElement>(".thumb-sprite")[0];
-
-      /* Baş parmak poz dizisi. Kare indeksi baştan sona artan TEK bir sayı:
-         her hedef için "havada git → cama in → bastır" üç anahtar kareyle
-         gömülü (blender/thumb_frames.py). Kesirli değer en yakın kareye
-         yuvarlanır, elin kavrama kayması ise ara değerlenir — ikisi de aynı
-         sayıdan sürüldüğü için parmak elden hiç ayrı düşmüyor. */
-      const { cols, rows, frames: FRAME_N, frameForTarget, pressForTarget, handShift, tips } =
-        thumbFrames;
-      const clampFrame = (f: number) => Math.max(0, Math.min(FRAME_N - 1, f));
-      const showFrame = (f: number) => {
-        const v = clampFrame(f);
-        if (sprite) {
-          const i = Math.round(v);
-          const col = i % cols;
-          const row = Math.floor(i / cols);
-          sprite.style.backgroundPosition =
-            `${cols > 1 ? (col / (cols - 1)) * 100 : 0}% ${rows > 1 ? (row / (rows - 1)) * 100 : 0}%`;
-        }
-        // Uzak hedeflerde parmak tek başına yetişmiyor; açığı el kapatıyor.
-        const lo = Math.floor(v);
-        const hi = Math.min(FRAME_N - 1, lo + 1);
-        const u = v - lo;
-        const dx = handShift[lo][0] + (handShift[hi][0] - handShift[lo][0]) * u;
-        const dy = handShift[lo][1] + (handShift[hi][1] - handShift[lo][1]) * u;
-        gsap.set(hand, { xPercent: (dx / STAGE.w) * 100, yPercent: (dy / HAND_FRAME.h) * 100 });
-      };
-
-      /* Halkanın yeri: hedefin kendisi değil, parmağın O KAREDE gerçekten
-         indiği nokta. İkisini ayrı beslersek dokunuş sahte duruyor. */
-      const tapAt = (f: number) => {
-        const t = tips[clampFrame(Math.round(f))];
-        return { x: (t[0] - SCREEN.x) / SCREEN.w, y: (t[1] - SCREEN.y) / SCREEN.h };
-      };
 
       /* başlangıç durumu */
       gsap.set(screens, { opacity: 0, xPercent: 0, yPercent: 0, scale: 1 });
@@ -111,9 +73,6 @@ export default function Journey() {
       gsap.set(copies, { opacity: 0, y: 34 });
       gsap.set(copies[0], { opacity: 1, y: 0 });
       gsap.set(fills, { scaleX: 0, transformOrigin: "left center" });
-      gsap.set(ripple, { xPercent: -50, yPercent: -50, opacity: 0, scale: 0.15 });
-      const frame = { v: 0 };
-      showFrame(0);
 
       if (reduced) {
         gsap.set(fills, { scaleX: 1 });
@@ -145,57 +104,7 @@ export default function Journey() {
         const t0 = INTRO + (i - 1);
         const tr = transition(step.enter);
 
-        /* 1 — dokunuşun ritmi: parmak camdan kalkıp hedefe gider (uzun),
-           cama iner, bir kare bastırır (çok kısa), sonra bırakır. Kareler
-           zaten bu üç duruşu taşıdığı için burada sadece zamanlama var. */
-        const touch = frameForTarget[i - 1] ?? 0;
-        const press = pressForTarget[i - 1] ?? touch;
-        // Halka TEMAS karesinden konumlanır: bastırma karesi ucu birkaç birim
-        // daha ileri itiyor, o bir basınç ayrıntısı — dokunulan nokta değil.
-        const tapPct = tapAt(touch);
-        const paint = () => showFrame(frame.v);
-
-        tl.to(frame, { v: touch, duration: 0.4, ease: "power2.inOut", onUpdate: paint }, t0);
-        tl.to(frame, { v: press, duration: 0.05, ease: "power2.in", onUpdate: paint }, t0 + 0.4);
-        tl.to(frame, { v: touch, duration: 0.14, ease: "power2.out", onUpdate: paint }, t0 + 0.47);
-
-        /* 2 — temas halkası, parmağın indiği noktada */
-        tl.set(ripple, { left: `${tapPct.x * 100}%`, top: `${tapPct.y * 100}%` }, t0 + 0.4);
-        tl.fromTo(
-          ripple,
-          { scale: 0.12, opacity: 0.9 },
-          { scale: 1, opacity: 0, duration: 0.32, ease: "power2.out" },
-          t0 + 0.45,
-        );
-
-        /* 2b — fizik: telefon parmağın bastığı yöne doğru çöker, sonra yaylanır.
-           Dokunuş ekranın hangi yarısındaysa eğim o tarafa gider. */
-        const dipX = (tapPct.x - 0.5) * 2.6;
-        const dipY = (tapPct.y - 0.5) * -2.2;
-        tl.to(
-          tilt,
-          {
-            rotationY: dipX,
-            rotationX: dipY,
-            scale: 0.994,
-            duration: 0.07,
-            ease: "power2.out",
-          },
-          t0 + 0.42,
-        );
-        tl.to(
-          tilt,
-          {
-            rotationY: 0,
-            rotationX: 0,
-            scale: 1,
-            duration: 0.75,
-            ease: "elastic.out(1, 0.62)",
-          },
-          t0 + 0.5,
-        );
-
-        /* 3 — ekran değişir */
+        /* 1 — ekran değişir */
         tl.fromTo(
           screens[i],
           tr.from,
@@ -204,7 +113,7 @@ export default function Journey() {
         );
         tl.to(screens[i - 1], { ...tr.out, duration: 0.34, ease: "power2.in" }, t0 + 0.47);
 
-        /* 4 — metin çapraz geçişle değişir */
+        /* 2 — metin çapraz geçişle değişir */
         tl.to(copies[i - 1], { opacity: 0, y: -26, duration: 0.26 }, t0 + 0.22);
         tl.fromTo(
           copies[i],
@@ -213,17 +122,7 @@ export default function Journey() {
           t0 + 0.42,
         );
 
-        /* 5 — kavrayış gevşer, sahne eğilir (baş parmak hedefte kalır) */
-        tl.to(
-          hand,
-          {
-            xPercent: (tapPct.x - 0.5) * 0.3,
-            yPercent: (tapPct.y - 0.5) * 0.2,
-            duration: 0.42,
-            ease: "power2.inOut",
-          },
-          t0 + 0.58,
-        );
+        /* 3 — sahne hafifçe eğilir (baş parmak animasyonu sonraki adımda) */
         tl.to(
           tilt,
           {
@@ -234,7 +133,7 @@ export default function Journey() {
           t0,
         );
 
-        /* 6 — ilerleme rayı */
+        /* 4 — ilerleme rayı */
         tl.to(fills[i], { scaleX: 1, duration: 0.72 }, t0 + 0.18);
         tl.to(dots[i], { backgroundColor: RAIL_ON, duration: 0.2 }, t0 + 0.5);
         tl.to(dots[i - 1], { backgroundColor: RAIL_OFF, duration: 0.2 }, t0 + 0.5);
@@ -349,40 +248,25 @@ export default function Journey() {
               }}
             >
               <div className="stage-tilt absolute inset-0">
-                {/* ekranın arkaya vuran parıltısı */}
-                <div
-                  className="pointer-events-none absolute"
-                  style={{
-                    ...PHONE_STYLE,
-                    background:
-                      "radial-gradient(60% 46% at 50% 46%, color-mix(in oklab, var(--accent) 26%, transparent) 0%, transparent 72%)",
-                    filter: "blur(28px)",
-                    transform: "scale(1.35)",
-                  }}
-                />
+                {/* el + telefon (tek statik fotoğraf) + üstüne binen canlı ekran */}
+                <HandLayer>
+                  {/* ekranın arkaya vuran parıltısı */}
+                  <div
+                    className="pointer-events-none absolute"
+                    style={{
+                      ...SCREEN_STYLE,
+                      background:
+                        "radial-gradient(60% 46% at 50% 46%, color-mix(in oklab, var(--accent) 26%, transparent) 0%, transparent 72%)",
+                      filter: "blur(28px)",
+                      transform: "scale(1.35)",
+                    }}
+                  />
 
-                {/* telefon gövdesi — ölçüleri Blender'daki holdout ile birebir */}
-                <div
-                  className="phone-body absolute isolate"
-                  style={{
-                    ...PHONE_STYLE,
-                    borderRadius: "15.5% / 7.7%",
-                    background:
-                      "linear-gradient(155deg,#39424e 0%,#242b34 24%,#1a2028 60%,#141a21 100%)",
-                    boxShadow:
-                      "0 1.5px 0 rgba(255,255,255,.15) inset, 0 -1px 0 rgba(0,0,0,.55) inset," +
-                      " 0 40px 90px -30px rgba(0,0,0,.85)",
-                  }}
-                >
+                  {/* canlı uygulama ekranı — statik fotoğraftaki telefon
+                      ekranının tam üstüne, ölçümlenmiş SCREEN dikdörtgeninde */}
                   <div
                     className="absolute overflow-hidden bg-black"
-                    style={{
-                      left: `${((SCREEN.x - PHONE.x) / PHONE.w) * 100}%`,
-                      top: `${((SCREEN.y - PHONE.y) / PHONE.h) * 100}%`,
-                      width: `${(SCREEN.w / PHONE.w) * 100}%`,
-                      height: `${(SCREEN.h / PHONE.h) * 100}%`,
-                      borderRadius: "13.5% / 6.6%",
-                    }}
+                    style={{ ...SCREEN_STYLE, borderRadius: "10% / 5%" }}
                   >
                     {journey.map((s, i) => (
                       <img
@@ -398,15 +282,6 @@ export default function Journey() {
                     ))}
 
                     <span
-                      className="tap-ripple pointer-events-none absolute z-[60] block aspect-square w-[26%] rounded-full"
-                      style={{
-                        background:
-                          "radial-gradient(circle, rgba(255,255,255,.6) 0%, color-mix(in oklab, var(--accent) 45%, transparent) 38%, transparent 68%)",
-                        boxShadow: "0 0 0 1px rgba(255,255,255,.35) inset",
-                      }}
-                    />
-
-                    <span
                       className="pointer-events-none absolute inset-0 z-[70]"
                       style={{
                         background:
@@ -414,10 +289,7 @@ export default function Journey() {
                       }}
                     />
                   </div>
-                </div>
-
-                {/* el + baş parmak poz dizisi */}
-                <HandLayer />
+                </HandLayer>
               </div>
             </div>
           </div>
