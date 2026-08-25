@@ -25,13 +25,13 @@ function transition(kind: string) {
       return {
         from: { xPercent: 102, yPercent: 0, scale: 1, opacity: 1 },
         to: { xPercent: 0, opacity: 1 },
-        out: { xPercent: -16, opacity: 0.15, scale: 0.99 },
+        out: { xPercent: -16, opacity: 0, scale: 0.99 },
       };
     case "slide-up":
       return {
         from: { yPercent: 26, xPercent: 0, scale: 1, opacity: 0 },
         to: { yPercent: 0, opacity: 1 },
-        out: { scale: 0.985, opacity: 0.25, xPercent: 0 },
+        out: { scale: 0.985, opacity: 0, xPercent: 0 },
       };
     case "zoom":
       return {
@@ -107,9 +107,10 @@ export default function Journey() {
         const tr = transition(step.enter);
 
         /* 1 — baş parmak hafifçe basar, ekran değişince bırakır (ufak, tek
-           kemikli hareket — bkz. Hand.tsx .hand-rest/.hand-press) */
-        tl.to(handPress, { opacity: 1, duration: 0.14, ease: "power2.out" }, t0 + 0.3);
-        tl.to(handPress, { opacity: 0, duration: 0.26, ease: "power2.in" }, t0 + 0.5);
+           kemikli hareket — bkz. Hand.tsx .hand-rest/.hand-press). Adımın
+           büyük kısmına yayılıyor ki hızlı scroll'da da fark edilsin. */
+        tl.to(handPress, { opacity: 1, duration: 0.22, ease: "power2.out" }, t0 + 0.14);
+        tl.to(handPress, { opacity: 0, duration: 0.4, ease: "power2.in" }, t0 + 0.58);
 
         /* 2 — ekran değişir */
         tl.fromTo(
