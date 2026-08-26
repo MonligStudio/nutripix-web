@@ -5,7 +5,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { journey } from "@/lib/content";
 import { themes } from "@/lib/palette";
-import { SCREEN_STYLE, STAGE } from "@/lib/stage";
+import { SCREEN_STYLE, STAGE, THUMB_POINT_STYLE } from "@/lib/stage";
 import { withBasePath } from "@/lib/paths";
 import { HandLayer } from "./Hand";
 
@@ -65,7 +65,7 @@ export default function Journey() {
       const fills = q<HTMLElement>("[data-rail-fill]");
       const dots = q<HTMLElement>("[data-rail-dot]");
       const tilt = q(".stage-tilt");
-      const handPress = q(".hand-press");
+      const sparks = q<HTMLElement>("[data-spark]");
 
       /* başlangıç durumu */
       gsap.set(screens, { opacity: 0, xPercent: 0, yPercent: 0, scale: 1 });
@@ -74,7 +74,7 @@ export default function Journey() {
       gsap.set(copies, { opacity: 0, y: 34 });
       gsap.set(copies[0], { opacity: 1, y: 0 });
       gsap.set(fills, { scaleX: 0, transformOrigin: "left center" });
-      gsap.set(handPress, { opacity: 0 });
+      gsap.set(sparks, { opacity: 0, scale: 0.5 });
 
       if (reduced) {
         gsap.set(fills, { scaleX: 1 });
@@ -106,11 +106,17 @@ export default function Journey() {
         const t0 = INTRO + (i - 1);
         const tr = transition(step.enter);
 
-        /* 1 — baş parmak hafifçe basar, ekran değişince bırakır (ufak, tek
-           kemikli hareket — bkz. Hand.tsx .hand-rest/.hand-press). Adımın
-           büyük kısmına yayılıyor ki hızlı scroll'da da fark edilsin. */
-        tl.to(handPress, { opacity: 1, duration: 0.22, ease: "power2.out" }, t0 + 0.14);
-        tl.to(handPress, { opacity: 0, duration: 0.4, ease: "power2.in" }, t0 + 0.58);
+        /* 1 — dokunuş kıvılcımı: parmağın gerçekte değdiği noktadan (THUMB_POINT)
+           bu adımın kendi accent rengiyle patlar, sayfa geçişini tetikleyen an bu.
+           El/telefon fotoğrafı sabit — hiçbir pozisyon değişimi yok, tek
+           hareket bu 2B ışık vurgusu. */
+        tl.fromTo(
+          sparks[i],
+          { opacity: 0, scale: 0.5 },
+          { opacity: 0.85, scale: 1, duration: 0.16, ease: "power2.out" },
+          t0 + 0.2,
+        );
+        tl.to(sparks[i], { opacity: 0, scale: 1.6, duration: 0.3, ease: "power2.in" }, t0 + 0.36);
 
         /* 2 — ekran değişir */
         tl.fromTo(
@@ -297,6 +303,23 @@ export default function Journey() {
                       }}
                     />
                   </div>
+
+                  {/* dokunuş kıvılcımı — parmağın fotoğrafta değdiği sabit
+                      noktadan (THUMB_POINT) adıma özel renkte patlar */}
+                  {journey.map((s) => (
+                    <div
+                      key={`spark-${s.id}`}
+                      data-spark
+                      className="pointer-events-none absolute z-80 -translate-x-1/2 -translate-y-1/2 rounded-full"
+                      style={{
+                        ...THUMB_POINT_STYLE,
+                        width: "18%",
+                        aspectRatio: "1 / 1",
+                        background: `radial-gradient(circle, ${s.accent} 0%, transparent 70%)`,
+                        filter: "blur(3px)",
+                      }}
+                    />
+                  ))}
                 </HandLayer>
               </div>
             </div>

@@ -32,3 +32,17 @@ const box = (r: { x: number; y: number; w: number; h: number }, frame: { w: numb
 });
 
 export const SCREEN_STYLE = box(SCREEN, HAND_FRAME);
+
+/**
+ * Baş parmağın fotoğrafta gerçekte değdiği nokta: ekranın sağ kenarı,
+ * yükseklikçe ortanın biraz altı (hand-phone-press.webp üstünde ölçüldü).
+ * Adım başına "dokunuş kıvılcımı" burada, o adımın accent rengiyle patlar —
+ * ekranın farklı yerlerine sahte dokunuş koymuyoruz çünkü parmak fotoğrafta
+ * hep aynı fiziksel noktada.
+ */
+export const THUMB_POINT = { x: 395, y: 420 };
+
+export const THUMB_POINT_STYLE = {
+  left: `${(THUMB_POINT.x / HAND_FRAME.w) * 100}%`,
+  top: `${(THUMB_POINT.y / HAND_FRAME.h) * 100}%`,
+};
